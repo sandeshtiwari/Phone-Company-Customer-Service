@@ -1,0 +1,793 @@
+{
+  "capabilities": [
+    {
+      "args": {
+        "subscription_id": {
+          "description": "Reviewed subscription UUID returned by Explore.",
+          "max_length": 36,
+          "required": true,
+          "type": "string"
+        }
+      },
+      "context": "telecom_customer",
+      "description": "Inspect one subscription in the authenticated account before discussing or proposing a plan change.",
+      "evidence": {
+        "query_audit": true,
+        "required": true
+      },
+      "kind": "read",
+      "lookup": {
+        "id_from_arg": "subscription_id"
+      },
+      "max_rows": 1,
+      "model_withheld_fields": [
+        "account_id"
+      ],
+      "name": "account.inspect_subscription",
+      "returns_hint": "Returns reviewed plan facts, the row version, and an evidence handle.",
+      "source": "telecom_postgres",
+      "subject": {
+        "primary_key": "subscription_id",
+        "schema": "telecom",
+        "table": "subscriptions",
+        "tenant_key": "account_id"
+      },
+      "visible_fields": [
+        "subscription_id",
+        "account_id",
+        "plan_code",
+        "plan_display_name",
+        "base_monthly_cents",
+        "included_lines",
+        "data_policy",
+        "international_day_pass",
+        "effective_from",
+        "contract_end_date",
+        "version",
+        "updated_at"
+      ]
+    },
+    {
+      "args": {
+        "monthly_price_cents": {
+          "description": "Exact base monthly cents for the destination plan: starter 4500, unlimited 6500, unlimited_plus 13500, family_premium 16500.",
+          "maximum": 16500,
+          "minimum": 4500,
+          "required": true,
+          "type": "number"
+        },
+        "plan_code": {
+          "description": "Exact reviewed destination plan.",
+          "enum": [
+            "starter",
+            "unlimited",
+            "unlimited_plus",
+            "family_premium"
+          ],
+          "required": true,
+          "type": "string"
+        },
+        "subscription_id": {
+          "description": "Reviewed subscription UUID returned by Explore or inspection.",
+          "max_length": 36,
+          "required": true,
+          "type": "string"
+        }
+      },
+      "context": "telecom_customer",
+      "description": "Propose changing the authenticated account plan. Use only after inspection and confirmation. Destination base prices at or below 16500 cents may be policy-approved within tenant daily circuit breakers.",
+      "evidence": {
+        "query_audit": true,
+        "required": true
+      },
+      "kind": "proposal",
+      "lookup": {
+        "id_from_arg": "subscription_id"
+      },
+      "max_rows": 1,
+      "model_withheld_fields": [
+        "account_id"
+      ],
+      "name": "account.propose_plan_change",
+      "proposal": {
+        "action": "account.propose_plan_change",
+        "allowed_fields": [
+          "plan_code",
+          "base_monthly_cents"
+        ],
+        "approval": {
+          "mode": "policy",
+          "policy": "account_propose_plan_change_auto_approval",
+          "required_role": "support_supervisor"
+        },
+        "conflict_guard": {
+          "column": "version"
+        },
+        "numeric_bounds": {
+          "base_monthly_cents": {
+            "maximum": 16500,
+            "minimum": 4500
+          }
+        },
+        "operation": {
+          "kind": "update"
+        },
+        "patch": {
+          "base_monthly_cents": {
+            "from_arg": "monthly_price_cents"
+          },
+          "plan_code": {
+            "from_arg": "plan_code"
+          }
+        },
+        "writeback": {
+          "executor": "telecom_app_handler",
+          "mode": "app_handler"
+        }
+      },
+      "returns_hint": "Returns a proposal id and exact diff. A qualifying plan may be policy-approved, but source writeback remains a separate trusted operation.",
+      "source": "telecom_postgres",
+      "subject": {
+        "conflict_key": "version",
+        "primary_key": "subscription_id",
+        "schema": "telecom",
+        "table": "subscriptions",
+        "tenant_key": "account_id"
+      },
+      "visible_fields": [
+        "subscription_id",
+        "account_id",
+        "plan_code",
+        "plan_display_name",
+        "base_monthly_cents",
+        "included_lines",
+        "data_policy",
+        "international_day_pass",
+        "version",
+        "updated_at"
+      ]
+    },
+    {
+      "args": {
+        "line_id": {
+          "description": "Reviewed line UUID returned by Explore.",
+          "max_length": 36,
+          "required": true,
+          "type": "string"
+        }
+      },
+      "context": "telecom_customer",
+      "description": "Inspect roaming and service settings for one line visible to the authenticated principal.",
+      "evidence": {
+        "query_audit": true,
+        "required": true
+      },
+      "kind": "read",
+      "lookup": {
+        "id_from_arg": "line_id"
+      },
+      "max_rows": 1,
+      "model_withheld_fields": [
+        "account_id",
+        "subscriber_id"
+      ],
+      "name": "line.inspect_service_settings",
+      "returns_hint": "Returns reviewed line settings, row version, and an evidence handle.",
+      "source": "telecom_postgres",
+      "subject": {
+        "primary_key": "line_id",
+        "schema": "telecom",
+        "table": "service_lines",
+        "tenant_key": "account_id"
+      },
+      "visible_fields": [
+        "line_id",
+        "account_id",
+        "subscriber_id",
+        "line_label",
+        "phone_last4",
+        "status",
+        "device_name",
+        "international_roaming_enabled",
+        "data_limit_gb",
+        "version",
+        "updated_at"
+      ]
+    },
+    {
+      "args": {
+        "enabled": {
+          "description": "True to enable international roaming; false to disable it.",
+          "required": true,
+          "type": "boolean"
+        },
+        "line_id": {
+          "description": "Reviewed line UUID returned by Explore or inspection.",
+          "max_length": 36,
+          "required": true,
+          "type": "string"
+        }
+      },
+      "context": "telecom_customer",
+      "description": "Propose enabling or disabling international roaming on a line the authenticated principal is allowed to manage.",
+      "evidence": {
+        "query_audit": true,
+        "required": true
+      },
+      "kind": "proposal",
+      "lookup": {
+        "id_from_arg": "line_id"
+      },
+      "max_rows": 1,
+      "model_withheld_fields": [
+        "account_id",
+        "subscriber_id"
+      ],
+      "name": "line.propose_roaming_change",
+      "proposal": {
+        "action": "line.propose_roaming_change",
+        "allowed_fields": [
+          "international_roaming_enabled"
+        ],
+        "approval": {
+          "mode": "human",
+          "required_role": "support_supervisor"
+        },
+        "conflict_guard": {
+          "column": "version"
+        },
+        "operation": {
+          "kind": "update"
+        },
+        "patch": {
+          "international_roaming_enabled": {
+            "from_arg": "enabled"
+          }
+        },
+        "writeback": {
+          "executor": "telecom_app_handler",
+          "mode": "app_handler"
+        }
+      },
+      "returns_hint": "Returns a review-required proposal id and exact diff; the source database is unchanged until external approval and app-owned apply.",
+      "source": "telecom_postgres",
+      "subject": {
+        "conflict_key": "version",
+        "primary_key": "line_id",
+        "schema": "telecom",
+        "table": "service_lines",
+        "tenant_key": "account_id"
+      },
+      "visible_fields": [
+        "line_id",
+        "account_id",
+        "subscriber_id",
+        "line_label",
+        "phone_last4",
+        "status",
+        "international_roaming_enabled",
+        "version",
+        "updated_at"
+      ]
+    },
+    {
+      "args": {
+        "billing_preference_id": {
+          "description": "Reviewed billing-preference UUID returned by Explore.",
+          "max_length": 36,
+          "required": true,
+          "type": "string"
+        }
+      },
+      "context": "telecom_customer",
+      "description": "Inspect autopay and paperless billing preferences for the authenticated account owner or manager.",
+      "evidence": {
+        "query_audit": true,
+        "required": true
+      },
+      "kind": "read",
+      "lookup": {
+        "id_from_arg": "billing_preference_id"
+      },
+      "max_rows": 1,
+      "model_withheld_fields": [
+        "account_id"
+      ],
+      "name": "billing.inspect_preferences",
+      "returns_hint": "Returns reviewed billing preferences, row version, and an evidence handle.",
+      "source": "telecom_postgres",
+      "subject": {
+        "primary_key": "billing_preference_id",
+        "schema": "telecom",
+        "table": "billing_preferences",
+        "tenant_key": "account_id"
+      },
+      "visible_fields": [
+        "billing_preference_id",
+        "account_id",
+        "autopay_enabled",
+        "paperless_billing",
+        "monthly_spend_alert_cents",
+        "payment_method_label",
+        "version",
+        "updated_at"
+      ]
+    },
+    {
+      "args": {
+        "billing_preference_id": {
+          "description": "Reviewed billing-preference UUID returned by Explore or inspection.",
+          "max_length": 36,
+          "required": true,
+          "type": "string"
+        },
+        "enabled": {
+          "description": "True to enable autopay; false to disable it.",
+          "required": true,
+          "type": "boolean"
+        }
+      },
+      "context": "telecom_customer",
+      "description": "Propose enabling or disabling autopay for the authenticated account owner or manager.",
+      "evidence": {
+        "query_audit": true,
+        "required": true
+      },
+      "kind": "proposal",
+      "lookup": {
+        "id_from_arg": "billing_preference_id"
+      },
+      "max_rows": 1,
+      "model_withheld_fields": [
+        "account_id"
+      ],
+      "name": "billing.propose_autopay_change",
+      "proposal": {
+        "action": "billing.propose_autopay_change",
+        "allowed_fields": [
+          "autopay_enabled"
+        ],
+        "approval": {
+          "mode": "human",
+          "required_role": "support_supervisor"
+        },
+        "conflict_guard": {
+          "column": "version"
+        },
+        "operation": {
+          "kind": "update"
+        },
+        "patch": {
+          "autopay_enabled": {
+            "from_arg": "enabled"
+          }
+        },
+        "writeback": {
+          "executor": "telecom_app_handler",
+          "mode": "app_handler"
+        }
+      },
+      "returns_hint": "Returns a review-required proposal id and exact diff; the source database is unchanged until external approval and app-owned apply.",
+      "source": "telecom_postgres",
+      "subject": {
+        "conflict_key": "version",
+        "primary_key": "billing_preference_id",
+        "schema": "telecom",
+        "table": "billing_preferences",
+        "tenant_key": "account_id"
+      },
+      "visible_fields": [
+        "billing_preference_id",
+        "account_id",
+        "autopay_enabled",
+        "paperless_billing",
+        "monthly_spend_alert_cents",
+        "payment_method_label",
+        "version",
+        "updated_at"
+      ]
+    },
+    {
+      "args": {
+        "billing_preference_id": {
+          "description": "Reviewed billing-preference UUID returned by Explore or inspection.",
+          "max_length": 36,
+          "required": true,
+          "type": "string"
+        },
+        "enabled": {
+          "description": "True for paperless billing; false for paper statements.",
+          "required": true,
+          "type": "boolean"
+        }
+      },
+      "context": "telecom_customer",
+      "description": "Propose enabling or disabling paperless billing for the authenticated account owner or manager.",
+      "evidence": {
+        "query_audit": true,
+        "required": true
+      },
+      "kind": "proposal",
+      "lookup": {
+        "id_from_arg": "billing_preference_id"
+      },
+      "max_rows": 1,
+      "model_withheld_fields": [
+        "account_id"
+      ],
+      "name": "billing.propose_paperless_change",
+      "proposal": {
+        "action": "billing.propose_paperless_change",
+        "allowed_fields": [
+          "paperless_billing"
+        ],
+        "approval": {
+          "mode": "human",
+          "required_role": "support_supervisor"
+        },
+        "conflict_guard": {
+          "column": "version"
+        },
+        "operation": {
+          "kind": "update"
+        },
+        "patch": {
+          "paperless_billing": {
+            "from_arg": "enabled"
+          }
+        },
+        "writeback": {
+          "executor": "telecom_app_handler",
+          "mode": "app_handler"
+        }
+      },
+      "returns_hint": "Returns a review-required proposal id and exact diff; the source database is unchanged until external approval and app-owned apply.",
+      "source": "telecom_postgres",
+      "subject": {
+        "conflict_key": "version",
+        "primary_key": "billing_preference_id",
+        "schema": "telecom",
+        "table": "billing_preferences",
+        "tenant_key": "account_id"
+      },
+      "visible_fields": [
+        "billing_preference_id",
+        "account_id",
+        "autopay_enabled",
+        "paperless_billing",
+        "monthly_spend_alert_cents",
+        "payment_method_label",
+        "version",
+        "updated_at"
+      ]
+    },
+    {
+      "args": {
+        "billing_preference_id": {
+          "description": "Reviewed billing-preference UUID returned by Explore or inspection.",
+          "max_length": 36,
+          "required": true,
+          "type": "string"
+        },
+        "threshold_cents": {
+          "description": "Monthly spend alert threshold in cents, from 1000 through 50000.",
+          "maximum": 50000,
+          "minimum": 1000,
+          "required": true,
+          "type": "number"
+        }
+      },
+      "context": "telecom_customer",
+      "description": "Propose a monthly account-spend notification threshold. Thresholds up to 25000 cents may be policy-approved within tenant daily circuit breakers.",
+      "evidence": {
+        "query_audit": true,
+        "required": true
+      },
+      "kind": "proposal",
+      "lookup": {
+        "id_from_arg": "billing_preference_id"
+      },
+      "max_rows": 1,
+      "model_withheld_fields": [
+        "account_id"
+      ],
+      "name": "billing.propose_spend_alert_change",
+      "proposal": {
+        "action": "billing.propose_spend_alert_change",
+        "allowed_fields": [
+          "monthly_spend_alert_cents"
+        ],
+        "approval": {
+          "mode": "policy",
+          "policy": "billing_propose_spend_alert_change_auto_approval",
+          "required_role": "support_supervisor"
+        },
+        "conflict_guard": {
+          "column": "version"
+        },
+        "numeric_bounds": {
+          "monthly_spend_alert_cents": {
+            "maximum": 50000,
+            "minimum": 1000
+          }
+        },
+        "operation": {
+          "kind": "update"
+        },
+        "patch": {
+          "monthly_spend_alert_cents": {
+            "from_arg": "threshold_cents"
+          }
+        },
+        "writeback": {
+          "executor": "telecom_app_handler",
+          "mode": "app_handler"
+        }
+      },
+      "returns_hint": "Returns a proposal id and exact diff. A qualifying low-risk threshold may be auto-approved, but source writeback remains a separate trusted operation.",
+      "source": "telecom_postgres",
+      "subject": {
+        "conflict_key": "version",
+        "primary_key": "billing_preference_id",
+        "schema": "telecom",
+        "table": "billing_preferences",
+        "tenant_key": "account_id"
+      },
+      "visible_fields": [
+        "billing_preference_id",
+        "account_id",
+        "monthly_spend_alert_cents",
+        "version",
+        "updated_at"
+      ]
+    },
+    {
+      "args": {
+        "case_id": {
+          "description": "Reviewed support-case UUID returned by Explore.",
+          "max_length": 36,
+          "required": true,
+          "type": "string"
+        }
+      },
+      "context": "telecom_customer",
+      "description": "Inspect one customer-visible support case before reporting details or proposing a customer note.",
+      "evidence": {
+        "query_audit": true,
+        "required": true
+      },
+      "kept_out_fields": [
+        "opened_by_principal_id",
+        "assigned_agent_id",
+        "note_policy_units"
+      ],
+      "kind": "read",
+      "lookup": {
+        "id_from_arg": "case_id"
+      },
+      "max_rows": 1,
+      "model_withheld_fields": [
+        "account_id"
+      ],
+      "name": "support.inspect_case",
+      "returns_hint": "Returns the reviewed case number, issue details, current status, latest support update, latest customer note, note count, row version, and evidence handle.",
+      "source": "telecom_postgres",
+      "subject": {
+        "primary_key": "case_id",
+        "schema": "telecom",
+        "table": "support_cases",
+        "tenant_key": "account_id"
+      },
+      "visible_fields": [
+        "case_id",
+        "account_id",
+        "case_number",
+        "category",
+        "subject",
+        "description",
+        "status",
+        "priority",
+        "latest_update_summary",
+        "latest_customer_note",
+        "latest_customer_note_length",
+        "customer_note_count",
+        "created_at",
+        "updated_at",
+        "version"
+      ]
+    },
+    {
+      "args": {
+        "case_id": {
+          "description": "Reviewed support-case UUID returned by Explore or exact case inspection.",
+          "max_length": 36,
+          "required": true,
+          "type": "string"
+        },
+        "note": {
+          "description": "Exact customer-authored note to append to the support case.",
+          "max_length": 1000,
+          "required": true,
+          "type": "string"
+        }
+      },
+      "context": "telecom_customer",
+      "description": "Propose adding a customer-authored note to one visible, non-closed support case. Notes up to 1000 characters may be policy-approved within tenant daily circuit breakers.",
+      "evidence": {
+        "query_audit": true,
+        "required": true
+      },
+      "kept_out_fields": [
+        "opened_by_principal_id",
+        "assigned_agent_id",
+        "note_policy_units"
+      ],
+      "kind": "proposal",
+      "lookup": {
+        "id_from_arg": "case_id"
+      },
+      "max_rows": 1,
+      "model_withheld_fields": [
+        "account_id"
+      ],
+      "name": "support.propose_case_note",
+      "proposal": {
+        "action": "support.propose_case_note",
+        "allowed_fields": [
+          "latest_customer_note",
+          "note_policy_units"
+        ],
+        "approval": {
+          "mode": "policy",
+          "policy": "support_propose_case_note_auto_approval",
+          "required_role": "support_supervisor"
+        },
+        "conflict_guard": {
+          "column": "version"
+        },
+        "numeric_bounds": {
+          "note_policy_units": {
+            "maximum": 1,
+            "minimum": 1
+          }
+        },
+        "operation": {
+          "kind": "update"
+        },
+        "patch": {
+          "latest_customer_note": {
+            "from_arg": "note"
+          },
+          "note_policy_units": {
+            "fixed": 1
+          }
+        },
+        "writeback": {
+          "executor": "telecom_app_handler",
+          "mode": "app_handler"
+        }
+      },
+      "returns_hint": "Returns a proposal id and exact note diff. A bounded note may be policy-approved, but insertion into case history remains a separate trusted app-owned operation.",
+      "source": "telecom_postgres",
+      "subject": {
+        "conflict_key": "version",
+        "primary_key": "case_id",
+        "schema": "telecom",
+        "table": "support_cases",
+        "tenant_key": "account_id"
+      },
+      "visible_fields": [
+        "case_id",
+        "account_id",
+        "case_number",
+        "category",
+        "subject",
+        "status",
+        "priority",
+        "latest_update_summary",
+        "latest_customer_note",
+        "latest_customer_note_length",
+        "customer_note_count",
+        "created_at",
+        "updated_at",
+        "version"
+      ]
+    }
+  ],
+  "contexts": [
+    {
+      "bindings": [
+        {
+          "key": "tenant_id",
+          "name": "tenant_id",
+          "required": true,
+          "source": "http_claim"
+        },
+        {
+          "key": "sub",
+          "name": "principal",
+          "required": true,
+          "source": "http_claim"
+        }
+      ],
+      "name": "telecom_customer",
+      "principal_binding": "principal",
+      "tenant_binding": "tenant_id"
+    }
+  ],
+  "kind": "SynapsorContract",
+  "policies": [
+    {
+      "kind": "approval",
+      "limits": [
+        {
+          "kind": "count",
+          "max": 3,
+          "period": "day",
+          "scope": "tenant_policy"
+        },
+        {
+          "field": "base_monthly_cents",
+          "kind": "total",
+          "max": 30000,
+          "period": "day",
+          "scope": "tenant_policy"
+        }
+      ],
+      "mode": "green",
+      "name": "account_propose_plan_change_auto_approval",
+      "rules": [
+        {
+          "field": "base_monthly_cents",
+          "max": 16500
+        }
+      ]
+    },
+    {
+      "kind": "approval",
+      "limits": [
+        {
+          "kind": "count",
+          "max": 10,
+          "period": "day",
+          "scope": "tenant_policy"
+        },
+        {
+          "field": "monthly_spend_alert_cents",
+          "kind": "total",
+          "max": 100000,
+          "period": "day",
+          "scope": "tenant_policy"
+        }
+      ],
+      "mode": "green",
+      "name": "billing_propose_spend_alert_change_auto_approval",
+      "rules": [
+        {
+          "field": "monthly_spend_alert_cents",
+          "max": 25000
+        }
+      ]
+    },
+    {
+      "kind": "approval",
+      "limits": [
+        {
+          "kind": "count",
+          "max": 20,
+          "period": "day",
+          "scope": "tenant_policy"
+        }
+      ],
+      "mode": "green",
+      "name": "support_propose_case_note_auto_approval",
+      "rules": [
+        {
+          "field": "note_policy_units",
+          "max": 1
+        }
+      ]
+    }
+  ],
+  "spec_version": "0.1"
+}

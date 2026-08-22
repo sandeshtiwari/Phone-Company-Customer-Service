@@ -1,0 +1,4022 @@
+{
+  "schema_version": "synapsor.auto-boundary.v1",
+  "activation": "blocked_unreviewed",
+  "engine": "postgres",
+  "database_role": {
+    "name": "synapsor_explore_reader",
+    "verified": true,
+    "read_only": true,
+    "superuser": false,
+    "bypass_rls": false,
+    "fingerprint": "sha256:082872dc461dacfe8c9ea1d728089de729f1d8ddbc51c2cc9292d1ddbb45ce4f"
+  },
+  "warnings": [
+    "Names and comments are untrusted naming evidence only; they never grant authority.",
+    "Tenant, principal, field exposure, aggregate permissions, relationships, privacy limits, and activation require human review."
+  ],
+  "summary": {
+    "objects": 9,
+    "draft_reads": 9,
+    "blocked_objects": 0,
+    "sensitive_fields_kept_out": 1,
+    "rls_policies": 0,
+    "structured_write_candidates": 0
+  },
+  "unresolved_decisions": [
+    "customer_explore.accounts: confirm filter/sort/group/aggregate-only field permissions",
+    "customer_explore.accounts: confirm minimum cohort and extraction/differencing budgets",
+    "customer_explore.accounts: confirm principal scope viewer_principal_id",
+    "customer_explore.accounts: confirm tenant key account_id",
+    "customer_explore.accounts: confirm visible and kept-out fields",
+    "customer_explore.billing_preferences: confirm filter/sort/group/aggregate-only field permissions",
+    "customer_explore.billing_preferences: confirm minimum cohort and extraction/differencing budgets",
+    "customer_explore.billing_preferences: confirm principal scope viewer_principal_id",
+    "customer_explore.billing_preferences: confirm tenant key account_id",
+    "customer_explore.billing_preferences: confirm visible and kept-out fields",
+    "customer_explore.invoices: confirm filter/sort/group/aggregate-only field permissions",
+    "customer_explore.invoices: confirm minimum cohort and extraction/differencing budgets",
+    "customer_explore.invoices: confirm principal scope viewer_principal_id",
+    "customer_explore.invoices: confirm tenant key account_id",
+    "customer_explore.invoices: confirm visible and kept-out fields",
+    "customer_explore.payments: confirm filter/sort/group/aggregate-only field permissions",
+    "customer_explore.payments: confirm minimum cohort and extraction/differencing budgets",
+    "customer_explore.payments: confirm principal scope viewer_principal_id",
+    "customer_explore.payments: confirm tenant key account_id",
+    "customer_explore.payments: confirm visible and kept-out fields",
+    "customer_explore.service_lines: confirm filter/sort/group/aggregate-only field permissions",
+    "customer_explore.service_lines: confirm minimum cohort and extraction/differencing budgets",
+    "customer_explore.service_lines: confirm principal scope viewer_principal_id",
+    "customer_explore.service_lines: confirm tenant key account_id",
+    "customer_explore.service_lines: confirm visible and kept-out fields",
+    "customer_explore.subscribers: confirm filter/sort/group/aggregate-only field permissions",
+    "customer_explore.subscribers: confirm minimum cohort and extraction/differencing budgets",
+    "customer_explore.subscribers: confirm principal scope viewer_principal_id",
+    "customer_explore.subscribers: confirm tenant key account_id",
+    "customer_explore.subscribers: confirm visible and kept-out fields",
+    "customer_explore.subscriptions: confirm filter/sort/group/aggregate-only field permissions",
+    "customer_explore.subscriptions: confirm minimum cohort and extraction/differencing budgets",
+    "customer_explore.subscriptions: confirm principal scope viewer_principal_id",
+    "customer_explore.subscriptions: confirm tenant key account_id",
+    "customer_explore.subscriptions: confirm visible and kept-out fields",
+    "customer_explore.support_cases: confirm filter/sort/group/aggregate-only field permissions",
+    "customer_explore.support_cases: confirm minimum cohort and extraction/differencing budgets",
+    "customer_explore.support_cases: confirm principal scope viewer_principal_id",
+    "customer_explore.support_cases: confirm tenant key account_id",
+    "customer_explore.support_cases: confirm visible and kept-out fields",
+    "customer_explore.usage_daily: confirm filter/sort/group/aggregate-only field permissions",
+    "customer_explore.usage_daily: confirm minimum cohort and extraction/differencing budgets",
+    "customer_explore.usage_daily: confirm principal scope viewer_principal_id",
+    "customer_explore.usage_daily: confirm reviewed labels and descriptions",
+    "customer_explore.usage_daily: confirm tenant key account_id",
+    "customer_explore.usage_daily: confirm visible and kept-out fields",
+    "deployment profile: confirm production Explore over secured HTTP with mandatory per-principal scope and privacy accounting",
+    "trusted context: confirm tenant and principal come only from verified HTTP claims tenant_id and sub"
+  ],
+  "resources": [
+    {
+      "id": "customer_explore.accounts",
+      "schema": "customer_explore",
+      "table": "accounts",
+      "type": "table",
+      "approximate_row_count": 13,
+      "primary_key": {
+        "selected": "explore_row_id",
+        "candidates": [
+          "explore_row_id"
+        ],
+        "evidence": [
+          {
+            "source": "database",
+            "detail": "inspected primary key: explore_row_id"
+          },
+          {
+            "source": "database",
+            "detail": "inspected single-column unique identifiers: explore_row_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "explore_row_id",
+            "confidence": "high",
+            "evidence": [
+              "database: inspected primary key: explore_row_id",
+              "database: inspected single-column unique identifiers: explore_row_id"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong identifier could select a different row or make one-row guarantees impossible."
+      },
+      "tenant_key": {
+        "selected": "account_id",
+        "candidates": [
+          "account_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "account_id: Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: account_id repeats across 9 inspected resources; repetition is supporting evidence only"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: column name account_id matches a low-confidence tenant convention"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: database inspector suggested account_id from naming metadata"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "account_id",
+            "confidence": "high",
+            "evidence": [
+              "Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required",
+              "account_id repeats across 9 inspected resources; repetition is supporting evidence only",
+              "column name account_id matches a low-confidence tenant convention",
+              "database inspector suggested account_id from naming metadata"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong tenant key can cause cross-tenant reads; confirmation is mandatory."
+      },
+      "principal_key": {
+        "selected": "viewer_principal_id",
+        "candidates": [
+          "viewer_principal_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "viewer_principal_id: Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary review is still required"
+          },
+          {
+            "source": "synapsor",
+            "detail": "human-reviewed principal key override: viewer_principal_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "viewer_principal_id",
+            "confidence": "high",
+            "evidence": [
+              "Human reviewed this inspected principal-scope column."
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "An incorrect owner or assignee key can expose another principal's row."
+      },
+      "fields": [
+        {
+          "name": "explore_row_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": true,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column explore_row_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "account_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column account_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "viewer_principal_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column viewer_principal_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "account_name",
+          "data_type": "text",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column account_name text",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "account_kind",
+          "data_type": "USER-DEFINED",
+          "enum_values": [
+            "individual",
+            "family",
+            "business"
+          ],
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column account_kind USER-DEFINED",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata.",
+            "database enum values: individual, family, business"
+          ]
+        },
+        {
+          "name": "status",
+          "data_type": "USER-DEFINED",
+          "enum_values": [
+            "active",
+            "suspended",
+            "closed"
+          ],
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column status USER-DEFINED",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata.",
+            "database enum values: active, suspended, closed"
+          ]
+        },
+        {
+          "name": "billing_cycle_day",
+          "data_type": "smallint",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column billing_cycle_day smallint",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "country_code",
+          "data_type": "character",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column country_code character",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "currency_code",
+          "data_type": "character",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column currency_code character",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column created_at timestamp with time zone",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        }
+      ],
+      "relationships": [],
+      "rls": {
+        "enabled": false,
+        "forced": false,
+        "effective_for_current_role": false,
+        "policy_names": [],
+        "using_expressions": []
+      },
+      "role_posture": {
+        "read_only": true,
+        "owner": false,
+        "can_assume_owner": false,
+        "write_capable": false,
+        "verified": true
+      },
+      "status": "draft_read",
+      "blockers": [],
+      "minimum_cohort_override": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    {
+      "id": "customer_explore.billing_preferences",
+      "schema": "customer_explore",
+      "table": "billing_preferences",
+      "type": "table",
+      "approximate_row_count": 8,
+      "primary_key": {
+        "selected": "explore_row_id",
+        "candidates": [
+          "explore_row_id"
+        ],
+        "evidence": [
+          {
+            "source": "database",
+            "detail": "inspected primary key: explore_row_id"
+          },
+          {
+            "source": "database",
+            "detail": "inspected single-column unique identifiers: explore_row_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "explore_row_id",
+            "confidence": "high",
+            "evidence": [
+              "database: inspected primary key: explore_row_id",
+              "database: inspected single-column unique identifiers: explore_row_id"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong identifier could select a different row or make one-row guarantees impossible."
+      },
+      "tenant_key": {
+        "selected": "account_id",
+        "candidates": [
+          "account_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "account_id: Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: account_id repeats across 9 inspected resources; repetition is supporting evidence only"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: column name account_id matches a low-confidence tenant convention"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: database inspector suggested account_id from naming metadata"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "account_id",
+            "confidence": "high",
+            "evidence": [
+              "Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required",
+              "account_id repeats across 9 inspected resources; repetition is supporting evidence only",
+              "column name account_id matches a low-confidence tenant convention",
+              "database inspector suggested account_id from naming metadata"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong tenant key can cause cross-tenant reads; confirmation is mandatory."
+      },
+      "principal_key": {
+        "selected": "viewer_principal_id",
+        "candidates": [
+          "viewer_principal_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "viewer_principal_id: Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary review is still required"
+          },
+          {
+            "source": "synapsor",
+            "detail": "human-reviewed principal key override: viewer_principal_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "viewer_principal_id",
+            "confidence": "high",
+            "evidence": [
+              "Human reviewed this inspected principal-scope column."
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "An incorrect owner or assignee key can expose another principal's row."
+      },
+      "fields": [
+        {
+          "name": "explore_row_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": true,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column explore_row_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "account_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column account_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "viewer_principal_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column viewer_principal_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "billing_preference_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column billing_preference_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "autopay_enabled",
+          "data_type": "boolean",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column autopay_enabled boolean",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "paperless_billing",
+          "data_type": "boolean",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column paperless_billing boolean",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "monthly_spend_alert_cents",
+          "data_type": "integer",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column monthly_spend_alert_cents integer",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column updated_at timestamp with time zone",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "version",
+          "data_type": "bigint",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column version bigint",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        }
+      ],
+      "relationships": [],
+      "rls": {
+        "enabled": false,
+        "forced": false,
+        "effective_for_current_role": false,
+        "policy_names": [],
+        "using_expressions": []
+      },
+      "role_posture": {
+        "read_only": true,
+        "owner": false,
+        "can_assume_owner": false,
+        "write_capable": false,
+        "verified": true
+      },
+      "status": "draft_read",
+      "blockers": [],
+      "minimum_cohort_override": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    {
+      "id": "customer_explore.invoices",
+      "schema": "customer_explore",
+      "table": "invoices",
+      "type": "table",
+      "approximate_row_count": 192,
+      "primary_key": {
+        "selected": "explore_row_id",
+        "candidates": [
+          "explore_row_id"
+        ],
+        "evidence": [
+          {
+            "source": "database",
+            "detail": "inspected primary key: explore_row_id"
+          },
+          {
+            "source": "database",
+            "detail": "inspected single-column unique identifiers: explore_row_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "explore_row_id",
+            "confidence": "high",
+            "evidence": [
+              "database: inspected primary key: explore_row_id",
+              "database: inspected single-column unique identifiers: explore_row_id"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong identifier could select a different row or make one-row guarantees impossible."
+      },
+      "tenant_key": {
+        "selected": "account_id",
+        "candidates": [
+          "account_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "account_id: Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: account_id repeats across 9 inspected resources; repetition is supporting evidence only"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: column name account_id matches a low-confidence tenant convention"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: database inspector suggested account_id from naming metadata"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "account_id",
+            "confidence": "high",
+            "evidence": [
+              "Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required",
+              "account_id repeats across 9 inspected resources; repetition is supporting evidence only",
+              "column name account_id matches a low-confidence tenant convention",
+              "database inspector suggested account_id from naming metadata"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong tenant key can cause cross-tenant reads; confirmation is mandatory."
+      },
+      "principal_key": {
+        "selected": "viewer_principal_id",
+        "candidates": [
+          "viewer_principal_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "viewer_principal_id: Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary review is still required"
+          },
+          {
+            "source": "synapsor",
+            "detail": "human-reviewed principal key override: viewer_principal_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "viewer_principal_id",
+            "confidence": "high",
+            "evidence": [
+              "Human reviewed this inspected principal-scope column."
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "An incorrect owner or assignee key can expose another principal's row."
+      },
+      "fields": [
+        {
+          "name": "explore_row_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": true,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column explore_row_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "account_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column account_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "viewer_principal_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column viewer_principal_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "invoice_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column invoice_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "period_start",
+          "data_type": "date",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column period_start date",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "period_end",
+          "data_type": "date",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column period_end date",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "due_date",
+          "data_type": "date",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column due_date date",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "status",
+          "data_type": "USER-DEFINED",
+          "enum_values": [
+            "draft",
+            "open",
+            "paid",
+            "past_due"
+          ],
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column status USER-DEFINED",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata.",
+            "database enum values: draft, open, paid, past_due"
+          ]
+        },
+        {
+          "name": "subtotal_cents",
+          "data_type": "integer",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column subtotal_cents integer",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "taxes_cents",
+          "data_type": "integer",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column taxes_cents integer",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "adjustments_cents",
+          "data_type": "integer",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column adjustments_cents integer",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "total_cents",
+          "data_type": "integer",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column total_cents integer",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "balance_cents",
+          "data_type": "integer",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column balance_cents integer",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column created_at timestamp with time zone",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column updated_at timestamp with time zone",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        }
+      ],
+      "relationships": [],
+      "rls": {
+        "enabled": false,
+        "forced": false,
+        "effective_for_current_role": false,
+        "policy_names": [],
+        "using_expressions": []
+      },
+      "role_posture": {
+        "read_only": true,
+        "owner": false,
+        "can_assume_owner": false,
+        "write_capable": false,
+        "verified": true
+      },
+      "status": "draft_read",
+      "blockers": [],
+      "minimum_cohort_override": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    {
+      "id": "customer_explore.payments",
+      "schema": "customer_explore",
+      "table": "payments",
+      "type": "table",
+      "approximate_row_count": 184,
+      "primary_key": {
+        "selected": "explore_row_id",
+        "candidates": [
+          "explore_row_id"
+        ],
+        "evidence": [
+          {
+            "source": "database",
+            "detail": "inspected primary key: explore_row_id"
+          },
+          {
+            "source": "database",
+            "detail": "inspected single-column unique identifiers: explore_row_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "explore_row_id",
+            "confidence": "high",
+            "evidence": [
+              "database: inspected primary key: explore_row_id",
+              "database: inspected single-column unique identifiers: explore_row_id"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong identifier could select a different row or make one-row guarantees impossible."
+      },
+      "tenant_key": {
+        "selected": "account_id",
+        "candidates": [
+          "account_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "account_id: Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: account_id repeats across 9 inspected resources; repetition is supporting evidence only"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: column name account_id matches a low-confidence tenant convention"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: database inspector suggested account_id from naming metadata"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "account_id",
+            "confidence": "high",
+            "evidence": [
+              "Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required",
+              "account_id repeats across 9 inspected resources; repetition is supporting evidence only",
+              "column name account_id matches a low-confidence tenant convention",
+              "database inspector suggested account_id from naming metadata"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong tenant key can cause cross-tenant reads; confirmation is mandatory."
+      },
+      "principal_key": {
+        "selected": "viewer_principal_id",
+        "candidates": [
+          "viewer_principal_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "viewer_principal_id: Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary review is still required"
+          },
+          {
+            "source": "synapsor",
+            "detail": "human-reviewed principal key override: viewer_principal_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "viewer_principal_id",
+            "confidence": "high",
+            "evidence": [
+              "Human reviewed this inspected principal-scope column."
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "An incorrect owner or assignee key can expose another principal's row."
+      },
+      "fields": [
+        {
+          "name": "explore_row_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": true,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column explore_row_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "account_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column account_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "viewer_principal_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column viewer_principal_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "payment_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column payment_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "invoice_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column invoice_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "paid_at",
+          "data_type": "timestamp with time zone",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column paid_at timestamp with time zone",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "amount_cents",
+          "data_type": "integer",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column amount_cents integer",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "status",
+          "data_type": "USER-DEFINED",
+          "enum_values": [
+            "pending",
+            "settled",
+            "failed",
+            "refunded"
+          ],
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column status USER-DEFINED",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata.",
+            "database enum values: pending, settled, failed, refunded"
+          ]
+        }
+      ],
+      "relationships": [],
+      "rls": {
+        "enabled": false,
+        "forced": false,
+        "effective_for_current_role": false,
+        "policy_names": [],
+        "using_expressions": []
+      },
+      "role_posture": {
+        "read_only": true,
+        "owner": false,
+        "can_assume_owner": false,
+        "write_capable": false,
+        "verified": true
+      },
+      "status": "draft_read",
+      "blockers": [],
+      "minimum_cohort_override": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    {
+      "id": "customer_explore.service_lines",
+      "schema": "customer_explore",
+      "table": "service_lines",
+      "type": "table",
+      "approximate_row_count": 25,
+      "primary_key": {
+        "selected": "explore_row_id",
+        "candidates": [
+          "explore_row_id"
+        ],
+        "evidence": [
+          {
+            "source": "database",
+            "detail": "inspected primary key: explore_row_id"
+          },
+          {
+            "source": "database",
+            "detail": "inspected single-column unique identifiers: explore_row_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "explore_row_id",
+            "confidence": "high",
+            "evidence": [
+              "database: inspected primary key: explore_row_id",
+              "database: inspected single-column unique identifiers: explore_row_id"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong identifier could select a different row or make one-row guarantees impossible."
+      },
+      "tenant_key": {
+        "selected": "account_id",
+        "candidates": [
+          "account_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "account_id: Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: account_id repeats across 9 inspected resources; repetition is supporting evidence only"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: column name account_id matches a low-confidence tenant convention"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: database inspector suggested account_id from naming metadata"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "account_id",
+            "confidence": "high",
+            "evidence": [
+              "Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required",
+              "account_id repeats across 9 inspected resources; repetition is supporting evidence only",
+              "column name account_id matches a low-confidence tenant convention",
+              "database inspector suggested account_id from naming metadata"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong tenant key can cause cross-tenant reads; confirmation is mandatory."
+      },
+      "principal_key": {
+        "selected": "viewer_principal_id",
+        "candidates": [
+          "viewer_principal_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "viewer_principal_id: Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary review is still required"
+          },
+          {
+            "source": "synapsor",
+            "detail": "human-reviewed principal key override: viewer_principal_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "viewer_principal_id",
+            "confidence": "high",
+            "evidence": [
+              "Human reviewed this inspected principal-scope column."
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "An incorrect owner or assignee key can expose another principal's row."
+      },
+      "fields": [
+        {
+          "name": "explore_row_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": true,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column explore_row_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "account_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column account_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "viewer_principal_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column viewer_principal_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "line_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column line_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "subscriber_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column subscriber_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "line_label",
+          "data_type": "text",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column line_label text",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "phone_last4",
+          "data_type": "character",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": true,
+          "sensitivity": {
+            "state": "high_confidence_sensitive",
+            "reason_codes": [
+              "direct_contact_or_address"
+            ],
+            "reasons": [
+              "The field name or description indicates direct contact or address information."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": false,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column phone_last4 character",
+            "database classification: The field name or description indicates direct contact or address information."
+          ]
+        },
+        {
+          "name": "status",
+          "data_type": "USER-DEFINED",
+          "enum_values": [
+            "active",
+            "suspended",
+            "canceled"
+          ],
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column status USER-DEFINED",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata.",
+            "database enum values: active, suspended, canceled"
+          ]
+        },
+        {
+          "name": "device_name",
+          "data_type": "text",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column device_name text",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "international_roaming_enabled",
+          "data_type": "boolean",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column international_roaming_enabled boolean",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "data_limit_gb",
+          "data_type": "numeric",
+          "nullable": true,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column data_limit_gb numeric",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "activated_on",
+          "data_type": "date",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column activated_on date",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column updated_at timestamp with time zone",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "version",
+          "data_type": "bigint",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column version bigint",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        }
+      ],
+      "relationships": [],
+      "rls": {
+        "enabled": false,
+        "forced": false,
+        "effective_for_current_role": false,
+        "policy_names": [],
+        "using_expressions": []
+      },
+      "role_posture": {
+        "read_only": true,
+        "owner": false,
+        "can_assume_owner": false,
+        "write_capable": false,
+        "verified": true
+      },
+      "status": "draft_read",
+      "blockers": [],
+      "minimum_cohort_override": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    {
+      "id": "customer_explore.subscribers",
+      "schema": "customer_explore",
+      "table": "subscribers",
+      "type": "table",
+      "approximate_row_count": 25,
+      "primary_key": {
+        "selected": "explore_row_id",
+        "candidates": [
+          "explore_row_id"
+        ],
+        "evidence": [
+          {
+            "source": "database",
+            "detail": "inspected primary key: explore_row_id"
+          },
+          {
+            "source": "database",
+            "detail": "inspected single-column unique identifiers: explore_row_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "explore_row_id",
+            "confidence": "high",
+            "evidence": [
+              "database: inspected primary key: explore_row_id",
+              "database: inspected single-column unique identifiers: explore_row_id"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong identifier could select a different row or make one-row guarantees impossible."
+      },
+      "tenant_key": {
+        "selected": "account_id",
+        "candidates": [
+          "account_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "account_id: Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: account_id repeats across 9 inspected resources; repetition is supporting evidence only"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: column name account_id matches a low-confidence tenant convention"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: database inspector suggested account_id from naming metadata"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "account_id",
+            "confidence": "high",
+            "evidence": [
+              "Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required",
+              "account_id repeats across 9 inspected resources; repetition is supporting evidence only",
+              "column name account_id matches a low-confidence tenant convention",
+              "database inspector suggested account_id from naming metadata"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong tenant key can cause cross-tenant reads; confirmation is mandatory."
+      },
+      "principal_key": {
+        "selected": "viewer_principal_id",
+        "candidates": [
+          "viewer_principal_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "viewer_principal_id: Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary review is still required"
+          },
+          {
+            "source": "synapsor",
+            "detail": "human-reviewed principal key override: viewer_principal_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "viewer_principal_id",
+            "confidence": "high",
+            "evidence": [
+              "Human reviewed this inspected principal-scope column."
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "An incorrect owner or assignee key can expose another principal's row."
+      },
+      "fields": [
+        {
+          "name": "explore_row_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": true,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column explore_row_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "account_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column account_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "viewer_principal_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column viewer_principal_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "subscriber_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column subscriber_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "display_name",
+          "data_type": "text",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "unresolved_free_text",
+            "reason_codes": [
+              "ambiguous_display_name"
+            ],
+            "reasons": [
+              "The field may contain a person's display name, so its exposure requires explicit review."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column display_name text",
+            "database classification: The field may contain a person's display name, so its exposure requires explicit review.",
+            "human review override: allow_reviewed_use"
+          ],
+          "review_override": {
+            "exposure": "allow_reviewed_use",
+            "actor": "sandeshtiwari",
+            "reason": "Authenticated family owners and managers need member names for customer service; direct principal entitlement prevents disclosure to unrelated members.",
+            "decided_at": "2026-08-21T20:38:26.878Z"
+          }
+        },
+        {
+          "name": "relationship_label",
+          "data_type": "text",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column relationship_label text",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "status",
+          "data_type": "USER-DEFINED",
+          "enum_values": [
+            "active",
+            "suspended",
+            "closed"
+          ],
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column status USER-DEFINED",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata.",
+            "database enum values: active, suspended, closed"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column created_at timestamp with time zone",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        }
+      ],
+      "relationships": [],
+      "rls": {
+        "enabled": false,
+        "forced": false,
+        "effective_for_current_role": false,
+        "policy_names": [],
+        "using_expressions": []
+      },
+      "role_posture": {
+        "read_only": true,
+        "owner": false,
+        "can_assume_owner": false,
+        "write_capable": false,
+        "verified": true
+      },
+      "status": "draft_read",
+      "blockers": [],
+      "minimum_cohort_override": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    {
+      "id": "customer_explore.subscriptions",
+      "schema": "customer_explore",
+      "table": "subscriptions",
+      "type": "table",
+      "approximate_row_count": 13,
+      "primary_key": {
+        "selected": "explore_row_id",
+        "candidates": [
+          "explore_row_id"
+        ],
+        "evidence": [
+          {
+            "source": "database",
+            "detail": "inspected primary key: explore_row_id"
+          },
+          {
+            "source": "database",
+            "detail": "inspected single-column unique identifiers: explore_row_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "explore_row_id",
+            "confidence": "high",
+            "evidence": [
+              "database: inspected primary key: explore_row_id",
+              "database: inspected single-column unique identifiers: explore_row_id"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong identifier could select a different row or make one-row guarantees impossible."
+      },
+      "tenant_key": {
+        "selected": "account_id",
+        "candidates": [
+          "account_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "account_id: Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: account_id repeats across 9 inspected resources; repetition is supporting evidence only"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: column name account_id matches a low-confidence tenant convention"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: database inspector suggested account_id from naming metadata"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "account_id",
+            "confidence": "high",
+            "evidence": [
+              "Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required",
+              "account_id repeats across 9 inspected resources; repetition is supporting evidence only",
+              "column name account_id matches a low-confidence tenant convention",
+              "database inspector suggested account_id from naming metadata"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong tenant key can cause cross-tenant reads; confirmation is mandatory."
+      },
+      "principal_key": {
+        "selected": "viewer_principal_id",
+        "candidates": [
+          "viewer_principal_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "viewer_principal_id: Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary review is still required"
+          },
+          {
+            "source": "synapsor",
+            "detail": "human-reviewed principal key override: viewer_principal_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "viewer_principal_id",
+            "confidence": "high",
+            "evidence": [
+              "Human reviewed this inspected principal-scope column."
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "An incorrect owner or assignee key can expose another principal's row."
+      },
+      "fields": [
+        {
+          "name": "explore_row_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": true,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column explore_row_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "account_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column account_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "viewer_principal_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column viewer_principal_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "subscription_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column subscription_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "plan_code",
+          "data_type": "USER-DEFINED",
+          "enum_values": [
+            "starter",
+            "unlimited",
+            "unlimited_plus",
+            "family_premium"
+          ],
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column plan_code USER-DEFINED",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata.",
+            "database enum values: starter, unlimited, unlimited_plus, family_premium"
+          ]
+        },
+        {
+          "name": "plan_display_name",
+          "data_type": "text",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column plan_display_name text",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "base_monthly_cents",
+          "data_type": "integer",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column base_monthly_cents integer",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "included_lines",
+          "data_type": "smallint",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column included_lines smallint",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "data_policy",
+          "data_type": "text",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column data_policy text",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "international_day_pass",
+          "data_type": "boolean",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column international_day_pass boolean",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "effective_from",
+          "data_type": "date",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column effective_from date",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "contract_end_date",
+          "data_type": "date",
+          "nullable": true,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column contract_end_date date",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column updated_at timestamp with time zone",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "version",
+          "data_type": "bigint",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column version bigint",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        }
+      ],
+      "relationships": [],
+      "rls": {
+        "enabled": false,
+        "forced": false,
+        "effective_for_current_role": false,
+        "policy_names": [],
+        "using_expressions": []
+      },
+      "role_posture": {
+        "read_only": true,
+        "owner": false,
+        "can_assume_owner": false,
+        "write_capable": false,
+        "verified": true
+      },
+      "status": "draft_read",
+      "blockers": [],
+      "minimum_cohort_override": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    {
+      "id": "customer_explore.support_cases",
+      "schema": "customer_explore",
+      "table": "support_cases",
+      "type": "table",
+      "approximate_row_count": 5,
+      "primary_key": {
+        "selected": "explore_row_id",
+        "candidates": [
+          "explore_row_id"
+        ],
+        "evidence": [
+          {
+            "source": "database",
+            "detail": "inspected primary key: explore_row_id"
+          },
+          {
+            "source": "database",
+            "detail": "inspected single-column unique identifiers: explore_row_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "explore_row_id",
+            "confidence": "high",
+            "evidence": [
+              "database: inspected primary key: explore_row_id",
+              "database: inspected single-column unique identifiers: explore_row_id"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong identifier could select a different row or make one-row guarantees impossible."
+      },
+      "tenant_key": {
+        "selected": "account_id",
+        "candidates": [
+          "account_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "account_id: Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: account_id repeats across 9 inspected resources; repetition is supporting evidence only"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: column name account_id matches a low-confidence tenant convention"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: database inspector suggested account_id from naming metadata"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "account_id",
+            "confidence": "high",
+            "evidence": [
+              "Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required",
+              "account_id repeats across 9 inspected resources; repetition is supporting evidence only",
+              "column name account_id matches a low-confidence tenant convention",
+              "database inspector suggested account_id from naming metadata"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong tenant key can cause cross-tenant reads; confirmation is mandatory."
+      },
+      "principal_key": {
+        "selected": "viewer_principal_id",
+        "candidates": [
+          "viewer_principal_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "viewer_principal_id: Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary review is still required"
+          },
+          {
+            "source": "synapsor",
+            "detail": "human-reviewed principal key override: viewer_principal_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "viewer_principal_id",
+            "confidence": "high",
+            "evidence": [
+              "Human reviewed this inspected principal-scope column."
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "An incorrect owner or assignee key can expose another principal's row."
+      },
+      "fields": [
+        {
+          "name": "explore_row_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": true,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column explore_row_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "account_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column account_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "viewer_principal_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column viewer_principal_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "case_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column case_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "subject",
+          "data_type": "text",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column subject text",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "status",
+          "data_type": "text",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column status text",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "priority",
+          "data_type": "text",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column priority text",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column created_at timestamp with time zone",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column updated_at timestamp with time zone",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        }
+      ],
+      "relationships": [],
+      "rls": {
+        "enabled": false,
+        "forced": false,
+        "effective_for_current_role": false,
+        "policy_names": [],
+        "using_expressions": []
+      },
+      "role_posture": {
+        "read_only": true,
+        "owner": false,
+        "can_assume_owner": false,
+        "write_capable": false,
+        "verified": true
+      },
+      "status": "draft_read",
+      "blockers": [],
+      "minimum_cohort_override": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    {
+      "id": "customer_explore.usage_daily",
+      "schema": "customer_explore",
+      "table": "usage_daily",
+      "type": "table",
+      "approximate_row_count": 9125,
+      "primary_key": {
+        "selected": "explore_row_id",
+        "candidates": [
+          "explore_row_id"
+        ],
+        "evidence": [
+          {
+            "source": "database",
+            "detail": "inspected primary key: explore_row_id"
+          },
+          {
+            "source": "database",
+            "detail": "inspected single-column unique identifiers: explore_row_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "explore_row_id",
+            "confidence": "high",
+            "evidence": [
+              "database: inspected primary key: explore_row_id",
+              "database: inspected single-column unique identifiers: explore_row_id"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong identifier could select a different row or make one-row guarantees impossible."
+      },
+      "tenant_key": {
+        "selected": "account_id",
+        "candidates": [
+          "account_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "account_id: Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: account_id repeats across 9 inspected resources; repetition is supporting evidence only"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: column name account_id matches a low-confidence tenant convention"
+          },
+          {
+            "source": "database",
+            "detail": "account_id: database inspector suggested account_id from naming metadata"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "account_id",
+            "confidence": "high",
+            "evidence": [
+              "Runner config tenant_binding explicitly names inspected non-null column account_id; exact boundary review is still required",
+              "account_id repeats across 9 inspected resources; repetition is supporting evidence only",
+              "column name account_id matches a low-confidence tenant convention",
+              "database inspector suggested account_id from naming metadata"
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "The wrong tenant key can cause cross-tenant reads; confirmation is mandatory."
+      },
+      "principal_key": {
+        "selected": "viewer_principal_id",
+        "candidates": [
+          "viewer_principal_id"
+        ],
+        "evidence": [
+          {
+            "source": "synapsor",
+            "detail": "viewer_principal_id: Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary review is still required"
+          },
+          {
+            "source": "synapsor",
+            "detail": "human-reviewed principal key override: viewer_principal_id"
+          }
+        ],
+        "alternatives_considered": [
+          {
+            "value": "viewer_principal_id",
+            "confidence": "high",
+            "evidence": [
+              "Human reviewed this inspected principal-scope column."
+            ],
+            "selected": true
+          }
+        ],
+        "confidence": "high",
+        "confirmation_required": true,
+        "safety_consequence": "An incorrect owner or assignee key can expose another principal's row."
+      },
+      "fields": [
+        {
+          "name": "explore_row_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": true,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column explore_row_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "account_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column account_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "viewer_principal_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column viewer_principal_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "usage_id",
+          "data_type": "bigint",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column usage_id bigint",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "line_id",
+          "data_type": "uuid",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column line_id uuid",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "usage_date",
+          "data_type": "date",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": true,
+          "evidence": [
+            "database column usage_date date",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "data_mb",
+          "data_type": "integer",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column data_mb integer",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "voice_minutes",
+          "data_type": "integer",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column voice_minutes integer",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "sms_count",
+          "data_type": "integer",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column sms_count integer",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "roaming_data_mb",
+          "data_type": "integer",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": true,
+          "count_distinct_suggestion": false,
+          "groupable_suggestion": false,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column roaming_data_mb integer",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+          ]
+        },
+        {
+          "name": "subscriber_name",
+          "data_type": "text",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column subscriber_name text",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata.",
+            "human review override: allow_reviewed_use",
+            "human review override: exact grouping enabled"
+          ],
+          "metadata_review_override": {
+            "label": "Member name",
+            "description": "Reviewed account member who owns the usage-producing line.",
+            "actor": "demo-boundary-reviewer",
+            "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+            "decided_at": "2026-08-21T22:15:11.598Z"
+          },
+          "review_override": {
+            "exposure": "allow_reviewed_use",
+            "actor": "demo-boundary-reviewer",
+            "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+            "decided_at": "2026-08-21T22:15:11.598Z"
+          },
+          "exact_numeric_grouping_review_override": {
+            "actor": "demo-boundary-reviewer",
+            "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+            "decided_at": "2026-08-21T22:15:11.599Z"
+          }
+        },
+        {
+          "name": "relationship_label",
+          "data_type": "text",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column relationship_label text",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata.",
+            "human review override: allow_reviewed_use",
+            "human review override: exact grouping enabled"
+          ],
+          "metadata_review_override": {
+            "label": "Member relationship",
+            "description": "Reviewed family or account relationship label for the member.",
+            "actor": "demo-boundary-reviewer",
+            "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+            "decided_at": "2026-08-21T22:15:11.598Z"
+          },
+          "review_override": {
+            "exposure": "allow_reviewed_use",
+            "actor": "demo-boundary-reviewer",
+            "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+            "decided_at": "2026-08-21T22:15:11.598Z"
+          },
+          "exact_numeric_grouping_review_override": {
+            "actor": "demo-boundary-reviewer",
+            "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+            "decided_at": "2026-08-21T22:15:11.599Z"
+          }
+        },
+        {
+          "name": "line_label",
+          "data_type": "text",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column line_label text",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata.",
+            "human review override: allow_reviewed_use",
+            "human review override: exact grouping enabled"
+          ],
+          "metadata_review_override": {
+            "label": "Line label",
+            "description": "Customer-facing label for the usage-producing service line.",
+            "actor": "demo-boundary-reviewer",
+            "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+            "decided_at": "2026-08-21T22:15:11.598Z"
+          },
+          "review_override": {
+            "exposure": "allow_reviewed_use",
+            "actor": "demo-boundary-reviewer",
+            "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+            "decided_at": "2026-08-21T22:15:11.598Z"
+          },
+          "exact_numeric_grouping_review_override": {
+            "actor": "demo-boundary-reviewer",
+            "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+            "decided_at": "2026-08-21T22:15:11.599Z"
+          }
+        },
+        {
+          "name": "device_name",
+          "data_type": "text",
+          "nullable": false,
+          "primary_key": false,
+          "sensitive_suggestion": false,
+          "sensitivity": {
+            "state": "structurally_low_risk",
+            "reason_codes": [
+              "no_sensitive_structural_signal"
+            ],
+            "reasons": [
+              "No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata."
+            ],
+            "evidence_source": "database"
+          },
+          "raw_visible_suggestion": true,
+          "aggregate_measure_suggestion": false,
+          "count_distinct_suggestion": true,
+          "groupable_suggestion": true,
+          "time_bucket_suggestion": false,
+          "evidence": [
+            "database column device_name text",
+            "database classification: No deterministic sensitive or unconstrained free-text signal was found in the available structural metadata.",
+            "human review override: allow_reviewed_use",
+            "human review override: exact grouping enabled"
+          ],
+          "metadata_review_override": {
+            "label": "Device name",
+            "description": "Reviewed device model currently attached to the line.",
+            "actor": "demo-boundary-reviewer",
+            "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+            "decided_at": "2026-08-21T22:15:11.598Z"
+          },
+          "review_override": {
+            "exposure": "allow_reviewed_use",
+            "actor": "demo-boundary-reviewer",
+            "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+            "decided_at": "2026-08-21T22:15:11.598Z"
+          },
+          "exact_numeric_grouping_review_override": {
+            "actor": "demo-boundary-reviewer",
+            "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+            "decided_at": "2026-08-21T22:15:11.599Z"
+          }
+        }
+      ],
+      "relationships": [],
+      "rls": {
+        "enabled": false,
+        "forced": false,
+        "effective_for_current_role": false,
+        "policy_names": [],
+        "using_expressions": []
+      },
+      "role_posture": {
+        "read_only": true,
+        "owner": false,
+        "can_assume_owner": false,
+        "write_capable": false,
+        "verified": true
+      },
+      "status": "draft_read",
+      "blockers": [],
+      "metadata_review_override": {
+        "label": "Daily member usage",
+        "description": "Daily mobile usage already scoped to the authenticated account and each principal entitlement.",
+        "actor": "demo-boundary-reviewer",
+        "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+        "decided_at": "2026-08-21T22:15:11.598Z"
+      },
+      "minimum_cohort_override": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    }
+  ],
+  "structured_actions": []
+}

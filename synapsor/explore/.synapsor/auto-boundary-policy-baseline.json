@@ -1,0 +1,1912 @@
+{
+  "schema_version": "synapsor.auto-boundary-policy-baseline.v1",
+  "boundary": {
+    "schema_version": "synapsor.exploration-boundary.v1",
+    "activation": "disabled_unreviewed",
+    "deployment_profile": "production",
+    "source": "local_postgres",
+    "compiler_version": "1.7.0",
+    "spec_version": "1.9.0",
+    "database_server_version": "PostgreSQL 16.4 (Debian 16.4-1.pgdg120+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit",
+    "database_server_tier": "full",
+    "database_server_authority": {
+      "schema_version": "synapsor.database-server-authority.v1",
+      "engine": "postgres",
+      "version_line": "16",
+      "features": {
+        "automatic_numeric_bands": true,
+        "schema_check_constraints": true
+      }
+    },
+    "reporting_timezone": "UTC",
+    "trusted_context": {
+      "provider": "http_claims",
+      "tenant_claim": "tenant_id",
+      "principal_claim": "sub"
+    },
+    "generation_lock_fingerprint": "sha256:fde2752d3358239837716059c10d2a0b31d65aaf811430ec8c7301025eeba94a",
+    "role_posture_fingerprint": "sha256:082872dc461dacfe8c9ea1d728089de729f1d8ddbc51c2cc9292d1ddbb45ce4f",
+    "pack": {
+      "name": "reviewed_production",
+      "resources": [
+        {
+          "id": "customer_explore.accounts",
+          "schema": "customer_explore",
+          "table": "accounts",
+          "primary_key": "explore_row_id",
+          "tenant_key": "account_id",
+          "principal_key": "viewer_principal_id",
+          "field_types": {
+            "explore_row_id": "uuid",
+            "account_id": "uuid",
+            "viewer_principal_id": "uuid",
+            "account_name": "text",
+            "account_kind": "USER-DEFINED",
+            "status": "USER-DEFINED",
+            "billing_cycle_day": "smallint",
+            "country_code": "character",
+            "currency_code": "character",
+            "created_at": "timestamp with time zone"
+          },
+          "field_enums": {
+            "account_kind": [
+              "individual",
+              "family",
+              "business"
+            ],
+            "status": [
+              "active",
+              "suspended",
+              "closed"
+            ]
+          },
+          "selectable_fields": [
+            "explore_row_id",
+            "account_name",
+            "account_kind",
+            "status",
+            "billing_cycle_day",
+            "country_code",
+            "currency_code",
+            "created_at"
+          ],
+          "filterable_fields": {
+            "explore_row_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "account_name": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "account_kind": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "status": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "billing_cycle_day": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "country_code": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "currency_code": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "created_at": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ]
+          },
+          "sortable_fields": [
+            "explore_row_id",
+            "account_name",
+            "account_kind",
+            "status",
+            "billing_cycle_day",
+            "country_code",
+            "currency_code",
+            "created_at"
+          ],
+          "groupable_fields": [
+            "account_name",
+            "account_kind",
+            "status",
+            "country_code",
+            "currency_code"
+          ],
+          "aggregate_measures": [
+            "billing_cycle_day"
+          ],
+          "aggregate_measure_functions": {
+            "billing_cycle_day": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ]
+          },
+          "presence_measure_fields": [
+            "explore_row_id",
+            "account_name",
+            "account_kind",
+            "status",
+            "billing_cycle_day",
+            "country_code",
+            "currency_code",
+            "created_at"
+          ],
+          "count_distinct_fields": [
+            "explore_row_id"
+          ],
+          "time_bucket_fields": {
+            "created_at": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ]
+          },
+          "kept_out_fields": [
+            "account_id",
+            "viewer_principal_id"
+          ],
+          "relationships": [],
+          "minimum_cohort_size": 5,
+          "suppression_aware_totals": true
+        },
+        {
+          "id": "customer_explore.billing_preferences",
+          "schema": "customer_explore",
+          "table": "billing_preferences",
+          "primary_key": "explore_row_id",
+          "tenant_key": "account_id",
+          "principal_key": "viewer_principal_id",
+          "field_types": {
+            "explore_row_id": "uuid",
+            "account_id": "uuid",
+            "viewer_principal_id": "uuid",
+            "billing_preference_id": "uuid",
+            "autopay_enabled": "boolean",
+            "paperless_billing": "boolean",
+            "monthly_spend_alert_cents": "integer",
+            "updated_at": "timestamp with time zone",
+            "version": "bigint"
+          },
+          "field_enums": {},
+          "selectable_fields": [
+            "explore_row_id",
+            "billing_preference_id",
+            "autopay_enabled",
+            "paperless_billing",
+            "monthly_spend_alert_cents",
+            "updated_at",
+            "version"
+          ],
+          "filterable_fields": {
+            "explore_row_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "billing_preference_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "autopay_enabled": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "paperless_billing": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "monthly_spend_alert_cents": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "updated_at": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "version": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ]
+          },
+          "sortable_fields": [
+            "explore_row_id",
+            "billing_preference_id",
+            "autopay_enabled",
+            "paperless_billing",
+            "monthly_spend_alert_cents",
+            "updated_at",
+            "version"
+          ],
+          "groupable_fields": [
+            "autopay_enabled",
+            "paperless_billing"
+          ],
+          "aggregate_measures": [
+            "monthly_spend_alert_cents"
+          ],
+          "aggregate_measure_functions": {
+            "monthly_spend_alert_cents": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ]
+          },
+          "presence_measure_fields": [
+            "explore_row_id",
+            "billing_preference_id",
+            "autopay_enabled",
+            "paperless_billing",
+            "monthly_spend_alert_cents",
+            "updated_at",
+            "version"
+          ],
+          "count_distinct_fields": [
+            "explore_row_id",
+            "billing_preference_id"
+          ],
+          "time_bucket_fields": {
+            "updated_at": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ]
+          },
+          "kept_out_fields": [
+            "account_id",
+            "viewer_principal_id"
+          ],
+          "relationships": [],
+          "minimum_cohort_size": 5,
+          "suppression_aware_totals": true
+        },
+        {
+          "id": "customer_explore.invoices",
+          "schema": "customer_explore",
+          "table": "invoices",
+          "primary_key": "explore_row_id",
+          "tenant_key": "account_id",
+          "principal_key": "viewer_principal_id",
+          "field_types": {
+            "explore_row_id": "uuid",
+            "account_id": "uuid",
+            "viewer_principal_id": "uuid",
+            "invoice_id": "uuid",
+            "period_start": "date",
+            "period_end": "date",
+            "due_date": "date",
+            "status": "USER-DEFINED",
+            "subtotal_cents": "integer",
+            "taxes_cents": "integer",
+            "adjustments_cents": "integer",
+            "total_cents": "integer",
+            "balance_cents": "integer",
+            "created_at": "timestamp with time zone",
+            "updated_at": "timestamp with time zone"
+          },
+          "field_enums": {
+            "status": [
+              "draft",
+              "open",
+              "paid",
+              "past_due"
+            ]
+          },
+          "selectable_fields": [
+            "explore_row_id",
+            "invoice_id",
+            "period_start",
+            "period_end",
+            "due_date",
+            "status",
+            "subtotal_cents",
+            "taxes_cents",
+            "adjustments_cents",
+            "total_cents",
+            "balance_cents",
+            "created_at",
+            "updated_at"
+          ],
+          "filterable_fields": {
+            "explore_row_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "invoice_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "period_start": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "period_end": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "due_date": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "status": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "subtotal_cents": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "taxes_cents": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "adjustments_cents": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "total_cents": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "balance_cents": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "created_at": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "updated_at": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ]
+          },
+          "sortable_fields": [
+            "explore_row_id",
+            "invoice_id",
+            "period_start",
+            "period_end",
+            "due_date",
+            "status",
+            "subtotal_cents",
+            "taxes_cents",
+            "adjustments_cents",
+            "total_cents",
+            "balance_cents",
+            "created_at",
+            "updated_at"
+          ],
+          "groupable_fields": [
+            "status"
+          ],
+          "aggregate_measures": [
+            "subtotal_cents",
+            "taxes_cents",
+            "adjustments_cents",
+            "total_cents",
+            "balance_cents"
+          ],
+          "aggregate_measure_functions": {
+            "subtotal_cents": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ],
+            "taxes_cents": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ],
+            "adjustments_cents": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ],
+            "total_cents": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ],
+            "balance_cents": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ]
+          },
+          "presence_measure_fields": [
+            "explore_row_id",
+            "invoice_id",
+            "period_start",
+            "period_end",
+            "due_date",
+            "status",
+            "subtotal_cents",
+            "taxes_cents",
+            "adjustments_cents",
+            "total_cents",
+            "balance_cents",
+            "created_at",
+            "updated_at"
+          ],
+          "count_distinct_fields": [
+            "explore_row_id",
+            "invoice_id"
+          ],
+          "time_bucket_fields": {
+            "period_start": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ],
+            "period_end": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ],
+            "due_date": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ],
+            "created_at": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ],
+            "updated_at": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ]
+          },
+          "kept_out_fields": [
+            "account_id",
+            "viewer_principal_id"
+          ],
+          "relationships": [],
+          "minimum_cohort_size": 5,
+          "suppression_aware_totals": true
+        },
+        {
+          "id": "customer_explore.payments",
+          "schema": "customer_explore",
+          "table": "payments",
+          "primary_key": "explore_row_id",
+          "tenant_key": "account_id",
+          "principal_key": "viewer_principal_id",
+          "field_types": {
+            "explore_row_id": "uuid",
+            "account_id": "uuid",
+            "viewer_principal_id": "uuid",
+            "payment_id": "uuid",
+            "invoice_id": "uuid",
+            "paid_at": "timestamp with time zone",
+            "amount_cents": "integer",
+            "status": "USER-DEFINED"
+          },
+          "field_enums": {
+            "status": [
+              "pending",
+              "settled",
+              "failed",
+              "refunded"
+            ]
+          },
+          "selectable_fields": [
+            "explore_row_id",
+            "payment_id",
+            "invoice_id",
+            "paid_at",
+            "amount_cents",
+            "status"
+          ],
+          "filterable_fields": {
+            "explore_row_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "payment_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "invoice_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "paid_at": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "amount_cents": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "status": [
+              "eq",
+              "neq",
+              "in"
+            ]
+          },
+          "sortable_fields": [
+            "explore_row_id",
+            "payment_id",
+            "invoice_id",
+            "paid_at",
+            "amount_cents",
+            "status"
+          ],
+          "groupable_fields": [
+            "status"
+          ],
+          "aggregate_measures": [
+            "amount_cents"
+          ],
+          "aggregate_measure_functions": {
+            "amount_cents": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ]
+          },
+          "presence_measure_fields": [
+            "explore_row_id",
+            "payment_id",
+            "invoice_id",
+            "paid_at",
+            "amount_cents",
+            "status"
+          ],
+          "count_distinct_fields": [
+            "explore_row_id",
+            "payment_id",
+            "invoice_id"
+          ],
+          "time_bucket_fields": {
+            "paid_at": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ]
+          },
+          "kept_out_fields": [
+            "account_id",
+            "viewer_principal_id"
+          ],
+          "relationships": [],
+          "minimum_cohort_size": 5,
+          "suppression_aware_totals": true
+        },
+        {
+          "id": "customer_explore.service_lines",
+          "schema": "customer_explore",
+          "table": "service_lines",
+          "primary_key": "explore_row_id",
+          "tenant_key": "account_id",
+          "principal_key": "viewer_principal_id",
+          "field_types": {
+            "explore_row_id": "uuid",
+            "account_id": "uuid",
+            "viewer_principal_id": "uuid",
+            "line_id": "uuid",
+            "subscriber_id": "uuid",
+            "line_label": "text",
+            "phone_last4": "character",
+            "status": "USER-DEFINED",
+            "device_name": "text",
+            "international_roaming_enabled": "boolean",
+            "data_limit_gb": "numeric",
+            "activated_on": "date",
+            "updated_at": "timestamp with time zone",
+            "version": "bigint"
+          },
+          "field_enums": {
+            "status": [
+              "active",
+              "suspended",
+              "canceled"
+            ]
+          },
+          "selectable_fields": [
+            "explore_row_id",
+            "line_id",
+            "subscriber_id",
+            "line_label",
+            "status",
+            "device_name",
+            "international_roaming_enabled",
+            "data_limit_gb",
+            "activated_on",
+            "updated_at",
+            "version"
+          ],
+          "filterable_fields": {
+            "explore_row_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "line_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "subscriber_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "line_label": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "status": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "device_name": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "international_roaming_enabled": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "data_limit_gb": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "activated_on": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "updated_at": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "version": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ]
+          },
+          "sortable_fields": [
+            "explore_row_id",
+            "line_id",
+            "subscriber_id",
+            "line_label",
+            "status",
+            "device_name",
+            "international_roaming_enabled",
+            "data_limit_gb",
+            "activated_on",
+            "updated_at",
+            "version"
+          ],
+          "groupable_fields": [
+            "line_label",
+            "status",
+            "device_name",
+            "international_roaming_enabled"
+          ],
+          "aggregate_measures": [
+            "data_limit_gb"
+          ],
+          "aggregate_measure_functions": {
+            "data_limit_gb": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ]
+          },
+          "presence_measure_fields": [
+            "explore_row_id",
+            "line_id",
+            "subscriber_id",
+            "line_label",
+            "status",
+            "device_name",
+            "international_roaming_enabled",
+            "data_limit_gb",
+            "activated_on",
+            "updated_at",
+            "version"
+          ],
+          "count_distinct_fields": [
+            "explore_row_id",
+            "line_id",
+            "subscriber_id"
+          ],
+          "time_bucket_fields": {
+            "activated_on": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ],
+            "updated_at": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ]
+          },
+          "kept_out_fields": [
+            "phone_last4",
+            "account_id",
+            "viewer_principal_id"
+          ],
+          "relationships": [],
+          "minimum_cohort_size": 5,
+          "suppression_aware_totals": true
+        },
+        {
+          "id": "customer_explore.subscribers",
+          "schema": "customer_explore",
+          "table": "subscribers",
+          "primary_key": "explore_row_id",
+          "tenant_key": "account_id",
+          "principal_key": "viewer_principal_id",
+          "field_types": {
+            "explore_row_id": "uuid",
+            "account_id": "uuid",
+            "viewer_principal_id": "uuid",
+            "subscriber_id": "uuid",
+            "display_name": "text",
+            "relationship_label": "text",
+            "status": "USER-DEFINED",
+            "created_at": "timestamp with time zone"
+          },
+          "field_enums": {
+            "status": [
+              "active",
+              "suspended",
+              "closed"
+            ]
+          },
+          "selectable_fields": [
+            "explore_row_id",
+            "subscriber_id",
+            "relationship_label",
+            "status",
+            "created_at"
+          ],
+          "filterable_fields": {
+            "explore_row_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "subscriber_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "relationship_label": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "status": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "created_at": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ]
+          },
+          "sortable_fields": [
+            "explore_row_id",
+            "subscriber_id",
+            "relationship_label",
+            "status",
+            "created_at"
+          ],
+          "groupable_fields": [
+            "relationship_label",
+            "status"
+          ],
+          "aggregate_measures": [],
+          "aggregate_measure_functions": {},
+          "presence_measure_fields": [
+            "explore_row_id",
+            "subscriber_id",
+            "relationship_label",
+            "status",
+            "created_at"
+          ],
+          "count_distinct_fields": [
+            "explore_row_id",
+            "subscriber_id"
+          ],
+          "time_bucket_fields": {
+            "created_at": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ]
+          },
+          "kept_out_fields": [
+            "display_name",
+            "account_id",
+            "viewer_principal_id"
+          ],
+          "relationships": [],
+          "minimum_cohort_size": 5,
+          "suppression_aware_totals": true
+        },
+        {
+          "id": "customer_explore.subscriptions",
+          "schema": "customer_explore",
+          "table": "subscriptions",
+          "primary_key": "explore_row_id",
+          "tenant_key": "account_id",
+          "principal_key": "viewer_principal_id",
+          "field_types": {
+            "explore_row_id": "uuid",
+            "account_id": "uuid",
+            "viewer_principal_id": "uuid",
+            "subscription_id": "uuid",
+            "plan_code": "USER-DEFINED",
+            "plan_display_name": "text",
+            "base_monthly_cents": "integer",
+            "included_lines": "smallint",
+            "data_policy": "text",
+            "international_day_pass": "boolean",
+            "effective_from": "date",
+            "contract_end_date": "date",
+            "updated_at": "timestamp with time zone",
+            "version": "bigint"
+          },
+          "field_enums": {
+            "plan_code": [
+              "starter",
+              "unlimited",
+              "unlimited_plus",
+              "family_premium"
+            ]
+          },
+          "selectable_fields": [
+            "explore_row_id",
+            "subscription_id",
+            "plan_code",
+            "plan_display_name",
+            "base_monthly_cents",
+            "included_lines",
+            "data_policy",
+            "international_day_pass",
+            "effective_from",
+            "contract_end_date",
+            "updated_at",
+            "version"
+          ],
+          "filterable_fields": {
+            "explore_row_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "subscription_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "plan_code": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "plan_display_name": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "base_monthly_cents": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "included_lines": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "data_policy": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "international_day_pass": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "effective_from": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "contract_end_date": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "updated_at": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "version": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ]
+          },
+          "sortable_fields": [
+            "explore_row_id",
+            "subscription_id",
+            "plan_code",
+            "plan_display_name",
+            "base_monthly_cents",
+            "included_lines",
+            "data_policy",
+            "international_day_pass",
+            "effective_from",
+            "contract_end_date",
+            "updated_at",
+            "version"
+          ],
+          "groupable_fields": [
+            "plan_code",
+            "plan_display_name",
+            "data_policy",
+            "international_day_pass"
+          ],
+          "aggregate_measures": [
+            "base_monthly_cents",
+            "included_lines"
+          ],
+          "aggregate_measure_functions": {
+            "base_monthly_cents": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ],
+            "included_lines": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ]
+          },
+          "presence_measure_fields": [
+            "explore_row_id",
+            "subscription_id",
+            "plan_code",
+            "plan_display_name",
+            "base_monthly_cents",
+            "included_lines",
+            "data_policy",
+            "international_day_pass",
+            "effective_from",
+            "contract_end_date",
+            "updated_at",
+            "version"
+          ],
+          "count_distinct_fields": [
+            "explore_row_id",
+            "subscription_id"
+          ],
+          "time_bucket_fields": {
+            "effective_from": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ],
+            "contract_end_date": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ],
+            "updated_at": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ]
+          },
+          "kept_out_fields": [
+            "account_id",
+            "viewer_principal_id"
+          ],
+          "relationships": [],
+          "minimum_cohort_size": 5,
+          "suppression_aware_totals": true
+        },
+        {
+          "id": "customer_explore.support_cases",
+          "schema": "customer_explore",
+          "table": "support_cases",
+          "primary_key": "explore_row_id",
+          "tenant_key": "account_id",
+          "principal_key": "viewer_principal_id",
+          "field_types": {
+            "explore_row_id": "uuid",
+            "account_id": "uuid",
+            "viewer_principal_id": "uuid",
+            "case_id": "uuid",
+            "subject": "text",
+            "status": "text",
+            "priority": "text",
+            "created_at": "timestamp with time zone",
+            "updated_at": "timestamp with time zone"
+          },
+          "field_enums": {},
+          "selectable_fields": [
+            "explore_row_id",
+            "case_id",
+            "subject",
+            "status",
+            "priority",
+            "created_at",
+            "updated_at"
+          ],
+          "filterable_fields": {
+            "explore_row_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "case_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "subject": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "status": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "priority": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "created_at": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "updated_at": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ]
+          },
+          "sortable_fields": [
+            "explore_row_id",
+            "case_id",
+            "subject",
+            "status",
+            "priority",
+            "created_at",
+            "updated_at"
+          ],
+          "groupable_fields": [
+            "subject",
+            "status",
+            "priority"
+          ],
+          "aggregate_measures": [],
+          "aggregate_measure_functions": {},
+          "presence_measure_fields": [
+            "explore_row_id",
+            "case_id",
+            "subject",
+            "status",
+            "priority",
+            "created_at",
+            "updated_at"
+          ],
+          "count_distinct_fields": [
+            "explore_row_id",
+            "case_id"
+          ],
+          "time_bucket_fields": {
+            "created_at": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ],
+            "updated_at": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ]
+          },
+          "kept_out_fields": [
+            "account_id",
+            "viewer_principal_id"
+          ],
+          "relationships": [],
+          "minimum_cohort_size": 5,
+          "suppression_aware_totals": true
+        },
+        {
+          "id": "customer_explore.usage_daily",
+          "schema": "customer_explore",
+          "table": "usage_daily",
+          "primary_key": "explore_row_id",
+          "tenant_key": "account_id",
+          "principal_key": "viewer_principal_id",
+          "field_types": {
+            "explore_row_id": "uuid",
+            "account_id": "uuid",
+            "viewer_principal_id": "uuid",
+            "usage_id": "bigint",
+            "line_id": "uuid",
+            "usage_date": "date",
+            "data_mb": "integer",
+            "voice_minutes": "integer",
+            "sms_count": "integer",
+            "roaming_data_mb": "integer",
+            "subscriber_name": "text",
+            "relationship_label": "text",
+            "line_label": "text",
+            "device_name": "text"
+          },
+          "field_enums": {},
+          "selectable_fields": [
+            "explore_row_id",
+            "usage_id",
+            "line_id",
+            "usage_date",
+            "data_mb",
+            "voice_minutes",
+            "sms_count",
+            "roaming_data_mb",
+            "subscriber_name",
+            "relationship_label",
+            "line_label",
+            "device_name"
+          ],
+          "filterable_fields": {
+            "explore_row_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "usage_id": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "line_id": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "usage_date": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "data_mb": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "voice_minutes": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "sms_count": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "roaming_data_mb": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in"
+            ],
+            "subscriber_name": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "relationship_label": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "line_label": [
+              "eq",
+              "neq",
+              "in"
+            ],
+            "device_name": [
+              "eq",
+              "neq",
+              "in"
+            ]
+          },
+          "sortable_fields": [
+            "explore_row_id",
+            "usage_id",
+            "line_id",
+            "usage_date",
+            "data_mb",
+            "voice_minutes",
+            "sms_count",
+            "roaming_data_mb",
+            "subscriber_name",
+            "relationship_label",
+            "line_label",
+            "device_name"
+          ],
+          "groupable_fields": [
+            "subscriber_name",
+            "relationship_label",
+            "line_label",
+            "device_name"
+          ],
+          "aggregate_measures": [
+            "data_mb",
+            "voice_minutes",
+            "sms_count",
+            "roaming_data_mb"
+          ],
+          "aggregate_measure_functions": {
+            "data_mb": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ],
+            "voice_minutes": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ],
+            "sms_count": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ],
+            "roaming_data_mb": [
+              "sum",
+              "avg",
+              "stddev_samp",
+              "stddev_pop",
+              "var_samp",
+              "var_pop"
+            ]
+          },
+          "presence_measure_fields": [
+            "explore_row_id",
+            "usage_id",
+            "line_id",
+            "usage_date",
+            "data_mb",
+            "voice_minutes",
+            "sms_count",
+            "roaming_data_mb",
+            "subscriber_name",
+            "relationship_label",
+            "line_label",
+            "device_name"
+          ],
+          "count_distinct_fields": [
+            "explore_row_id",
+            "usage_id",
+            "line_id"
+          ],
+          "time_bucket_fields": {
+            "usage_date": [
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year",
+              "day_of_week"
+            ]
+          },
+          "kept_out_fields": [
+            "account_id",
+            "viewer_principal_id"
+          ],
+          "relationships": [],
+          "minimum_cohort_size": 5,
+          "suppression_aware_totals": true
+        }
+      ]
+    },
+    "budgets": {
+      "max_rows": 50,
+      "max_groups": 50,
+      "max_ranked_groups": 500,
+      "max_top_n": 25,
+      "max_measures": 3,
+      "max_dimensions": 3,
+      "max_time_ranges": 2,
+      "max_relationship_hops": 2,
+      "max_derived_scope_hops": 2,
+      "max_analysis_relationship_hops": 2,
+      "max_response_cells": 500,
+      "max_response_bytes": 65536,
+      "statement_timeout_ms": 3000,
+      "max_complexity": 24,
+      "max_queries_per_session": 1000,
+      "max_extracted_cells_per_session": 4000,
+      "max_differencing_queries": 16,
+      "rate_limit_per_minute": 120
+    },
+    "unresolved_decisions": [
+      "customer_explore.accounts: confirm filter/sort/group/aggregate-only field permissions",
+      "customer_explore.accounts: confirm minimum cohort and extraction/differencing budgets",
+      "customer_explore.accounts: confirm principal scope viewer_principal_id",
+      "customer_explore.accounts: confirm tenant key account_id",
+      "customer_explore.accounts: confirm visible and kept-out fields",
+      "customer_explore.billing_preferences: confirm filter/sort/group/aggregate-only field permissions",
+      "customer_explore.billing_preferences: confirm minimum cohort and extraction/differencing budgets",
+      "customer_explore.billing_preferences: confirm principal scope viewer_principal_id",
+      "customer_explore.billing_preferences: confirm tenant key account_id",
+      "customer_explore.billing_preferences: confirm visible and kept-out fields",
+      "customer_explore.invoices: confirm filter/sort/group/aggregate-only field permissions",
+      "customer_explore.invoices: confirm minimum cohort and extraction/differencing budgets",
+      "customer_explore.invoices: confirm principal scope viewer_principal_id",
+      "customer_explore.invoices: confirm tenant key account_id",
+      "customer_explore.invoices: confirm visible and kept-out fields",
+      "customer_explore.payments: confirm filter/sort/group/aggregate-only field permissions",
+      "customer_explore.payments: confirm minimum cohort and extraction/differencing budgets",
+      "customer_explore.payments: confirm principal scope viewer_principal_id",
+      "customer_explore.payments: confirm tenant key account_id",
+      "customer_explore.payments: confirm visible and kept-out fields",
+      "customer_explore.service_lines: confirm filter/sort/group/aggregate-only field permissions",
+      "customer_explore.service_lines: confirm minimum cohort and extraction/differencing budgets",
+      "customer_explore.service_lines: confirm principal scope viewer_principal_id",
+      "customer_explore.service_lines: confirm tenant key account_id",
+      "customer_explore.service_lines: confirm visible and kept-out fields",
+      "customer_explore.subscribers: confirm filter/sort/group/aggregate-only field permissions",
+      "customer_explore.subscribers: confirm minimum cohort and extraction/differencing budgets",
+      "customer_explore.subscribers: confirm principal scope viewer_principal_id",
+      "customer_explore.subscribers: confirm tenant key account_id",
+      "customer_explore.subscribers: confirm visible and kept-out fields",
+      "customer_explore.subscriptions: confirm filter/sort/group/aggregate-only field permissions",
+      "customer_explore.subscriptions: confirm minimum cohort and extraction/differencing budgets",
+      "customer_explore.subscriptions: confirm principal scope viewer_principal_id",
+      "customer_explore.subscriptions: confirm tenant key account_id",
+      "customer_explore.subscriptions: confirm visible and kept-out fields",
+      "customer_explore.support_cases: confirm filter/sort/group/aggregate-only field permissions",
+      "customer_explore.support_cases: confirm minimum cohort and extraction/differencing budgets",
+      "customer_explore.support_cases: confirm principal scope viewer_principal_id",
+      "customer_explore.support_cases: confirm tenant key account_id",
+      "customer_explore.support_cases: confirm visible and kept-out fields",
+      "customer_explore.usage_daily: confirm filter/sort/group/aggregate-only field permissions",
+      "customer_explore.usage_daily: confirm minimum cohort and extraction/differencing budgets",
+      "customer_explore.usage_daily: confirm principal scope viewer_principal_id",
+      "customer_explore.usage_daily: confirm tenant key account_id",
+      "customer_explore.usage_daily: confirm visible and kept-out fields",
+      "deployment profile: confirm production Explore over secured HTTP with mandatory per-principal scope and privacy accounting",
+      "trusted context: confirm tenant and principal come only from verified HTTP claims tenant_id and sub"
+    ]
+  },
+  "lock": {
+    "schema_version": "synapsor.generation-lock.v1",
+    "compiler_version": "1.7.0",
+    "spec_version": "1.9.0",
+    "engine": "postgres",
+    "database_server_version": "PostgreSQL 16.4 (Debian 16.4-1.pgdg120+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit",
+    "database_server_tier": "full",
+    "database_server_authority": {
+      "schema_version": "synapsor.database-server-authority.v1",
+      "engine": "postgres",
+      "version_line": "16",
+      "features": {
+        "automatic_numeric_bands": true,
+        "schema_check_constraints": true
+      }
+    },
+    "source_env": "DATABASE_URL",
+    "inspected_schema": "customer_explore",
+    "schema_fingerprint": "sha256:45965b0ed41ee89cfa0cb2cdb9fdd23bb583b58fda566fec6dc2a65ef27c2409",
+    "role_posture_fingerprint": "sha256:082872dc461dacfe8c9ea1d728089de729f1d8ddbc51c2cc9292d1ddbb45ce4f",
+    "evidence_fingerprint": "sha256:83de9d4b0f235d2e9be4d3680eecfdc362c17ada1d419b2824b4aa09c876574c",
+    "generated_contract_digest": "sha256:2ba922771857c57e4fbf68f3949899ab4df5d7342e61ea09433512aaf57ac975",
+    "reviewed_overrides_digest": "sha256:079ec9695433708e47c625faab884015bb0ca126dbbee45d950ea6bfc7a6ebc3",
+    "protected_authority": [
+      "customer_explore.accounts",
+      "customer_explore.billing_preferences",
+      "customer_explore.invoices",
+      "customer_explore.payments",
+      "customer_explore.service_lines",
+      "customer_explore.subscribers",
+      "customer_explore.subscriptions",
+      "customer_explore.support_cases",
+      "customer_explore.usage_daily"
+    ],
+    "reporting_timezone": "UTC",
+    "trusted_context_authority": {
+      "schema_version": "synapsor.configured-trusted-context-authority.v1",
+      "provider": "http_claims",
+      "tenant_binding": "account_id",
+      "principal_binding": "viewer_principal_id",
+      "tenant_claim": "tenant_id",
+      "principal_claim": "sub"
+    },
+    "trusted_context_fingerprint": "sha256:22175a31eb7c0fe790b8103bbc0d8f43ca1e0fffe33ba64efc0b4565740ca5ef",
+    "configured_trusted_context_used_for_inference": true,
+    "authority_dependencies": {
+      "schema_version": "synapsor.authority-dependencies.v1",
+      "credential_posture_fingerprint": "sha256:79bd5112f22ac532294fc711a8056eaf9e7eb88e49faf3a2a6a07b24e4dd726e",
+      "resources": {
+        "customer_explore.accounts": {
+          "schema": "customer_explore",
+          "table": "accounts",
+          "fields": [
+            "account_id",
+            "account_kind",
+            "account_name",
+            "billing_cycle_day",
+            "country_code",
+            "created_at",
+            "currency_code",
+            "explore_row_id",
+            "status",
+            "viewer_principal_id"
+          ],
+          "fingerprint": "sha256:c95c3039cedc40118748c246cc33c14a7e935b0607f988d3d0f52decd391a7a4"
+        },
+        "customer_explore.billing_preferences": {
+          "schema": "customer_explore",
+          "table": "billing_preferences",
+          "fields": [
+            "account_id",
+            "autopay_enabled",
+            "billing_preference_id",
+            "explore_row_id",
+            "monthly_spend_alert_cents",
+            "paperless_billing",
+            "updated_at",
+            "version",
+            "viewer_principal_id"
+          ],
+          "fingerprint": "sha256:5135bc7c7b3c964ec4fbe671f78081f81c94df17e306fb9ce89a90de0106224d"
+        },
+        "customer_explore.invoices": {
+          "schema": "customer_explore",
+          "table": "invoices",
+          "fields": [
+            "account_id",
+            "adjustments_cents",
+            "balance_cents",
+            "created_at",
+            "due_date",
+            "explore_row_id",
+            "invoice_id",
+            "period_end",
+            "period_start",
+            "status",
+            "subtotal_cents",
+            "taxes_cents",
+            "total_cents",
+            "updated_at",
+            "viewer_principal_id"
+          ],
+          "fingerprint": "sha256:9c7b29b8f8ba8502c593e23296aea1a6627a5a6820ad7fd1abf3d1b101a5f1ed"
+        },
+        "customer_explore.payments": {
+          "schema": "customer_explore",
+          "table": "payments",
+          "fields": [
+            "account_id",
+            "amount_cents",
+            "explore_row_id",
+            "invoice_id",
+            "paid_at",
+            "payment_id",
+            "status",
+            "viewer_principal_id"
+          ],
+          "fingerprint": "sha256:652d9b89a1c10bc7454252373baae63a35baa6414c26e4d6efa4fabe2592a692"
+        },
+        "customer_explore.service_lines": {
+          "schema": "customer_explore",
+          "table": "service_lines",
+          "fields": [
+            "account_id",
+            "activated_on",
+            "data_limit_gb",
+            "device_name",
+            "explore_row_id",
+            "international_roaming_enabled",
+            "line_id",
+            "line_label",
+            "status",
+            "subscriber_id",
+            "updated_at",
+            "version",
+            "viewer_principal_id"
+          ],
+          "fingerprint": "sha256:11227a1d4e14ec81feb0e0b844b45a5fccfecb47cfb8ad77b63249d6aac53eb6"
+        },
+        "customer_explore.subscribers": {
+          "schema": "customer_explore",
+          "table": "subscribers",
+          "fields": [
+            "account_id",
+            "created_at",
+            "explore_row_id",
+            "relationship_label",
+            "status",
+            "subscriber_id",
+            "viewer_principal_id"
+          ],
+          "fingerprint": "sha256:278e89be98e70e1fb0cc20678ac3727e4c91270bd13b2528ed47f59e600ae599"
+        },
+        "customer_explore.subscriptions": {
+          "schema": "customer_explore",
+          "table": "subscriptions",
+          "fields": [
+            "account_id",
+            "base_monthly_cents",
+            "contract_end_date",
+            "data_policy",
+            "effective_from",
+            "explore_row_id",
+            "included_lines",
+            "international_day_pass",
+            "plan_code",
+            "plan_display_name",
+            "subscription_id",
+            "updated_at",
+            "version",
+            "viewer_principal_id"
+          ],
+          "fingerprint": "sha256:cce025c5c39d7fce5d20194a858ac67975e951d5f917c16a9fb2c4b5d1fbc03b"
+        },
+        "customer_explore.support_cases": {
+          "schema": "customer_explore",
+          "table": "support_cases",
+          "fields": [
+            "account_id",
+            "case_id",
+            "created_at",
+            "explore_row_id",
+            "priority",
+            "status",
+            "subject",
+            "updated_at",
+            "viewer_principal_id"
+          ],
+          "fingerprint": "sha256:42027f05f7a7d9115556d05de5df1a8dfa05cb290a735a32a5fdfb207cfecc5e"
+        },
+        "customer_explore.usage_daily": {
+          "schema": "customer_explore",
+          "table": "usage_daily",
+          "fields": [
+            "account_id",
+            "data_mb",
+            "device_name",
+            "explore_row_id",
+            "line_id",
+            "line_label",
+            "relationship_label",
+            "roaming_data_mb",
+            "sms_count",
+            "subscriber_name",
+            "usage_date",
+            "usage_id",
+            "viewer_principal_id",
+            "voice_minutes"
+          ],
+          "fingerprint": "sha256:a32ee146dac4c590813b56dac86d18177c05c148671dbf3109b70875ebcb2cc5"
+        }
+      },
+      "relationships": {}
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "mode": "read_only",
+  "storage": {
+    "shared_postgres": {
+      "mode": "runtime_store",
+      "url_env": "SYNAPSOR_CONTROL_DATABASE_URL",
+      "schema": "synapsor_runner"
+    }
+  },
+  "sources": {
+    "local_postgres": {
+      "engine": "postgres",
+      "read_url_env": "DATABASE_URL",
+      "read_only": true,
+      "statement_timeout_ms": 3000,
+      "database_scope": {
+        "mode": "application"
+      },
+      "credential_scope": { "mode": "shared" }
+    }
+  },
+  "trusted_context": {
+    "provider": "http_claims",
+    "tenant_binding": "account_id",
+    "principal_binding": "viewer_principal_id"
+  },
+  "session_auth": {
+    "provider": "jwt_asymmetric",
+    "algorithms": ["RS256"],
+    "public_key_path": "/run/secrets/jwt-public.pem",
+    "issuer": "https://telecom.local",
+    "audience": "https://telecom.local/mcp/explore",
+    "tenant_claim": "tenant_id",
+    "principal_claim": "sub",
+    "clock_skew_seconds": 30
+  },
+  "http_security": {
+    "deployment": "shared",
+    "channel": "trusted_tls_proxy",
+    "allowed_hosts": ["telecom.local", "runner-explore:8766", "127.0.0.1:8766", "localhost:8766"],
+    "oauth_resource": {
+      "resource": "https://telecom.local/mcp/explore",
+      "authorization_servers": ["https://telecom.local"],
+      "scopes_supported": ["synapsor.explore"],
+      "required_scopes": ["synapsor.explore"],
+      "resource_name": "Luna Telecom scoped account Explore"
+    }
+  },
+  "production_explore": {
+    "enabled": true,
+    "project_root": ".",
+    "required_oauth_scope": "synapsor.explore",
+    "budget_hmac_key_env": "SYNAPSOR_EXPLORE_BUDGET_HMAC_KEY",
+    "accounting_namespace": "telecom.customer-service.production",
+    "source_max_connections": 8,
+    "max_sessions_per_principal": 4,
+    "tenant_limits": {
+      "max_queries_per_rolling_24_hours": 10000,
+      "max_extracted_cells_per_rolling_24_hours": 1000000,
+      "max_differencing_queries_per_rolling_24_hours": 2000,
+      "requests_per_minute": 1000,
+      "max_response_cells_per_response": 500
+    }
+  },
+  "capabilities": [],
+  "strict": true,
+  "result_format": 2
+}

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071412">
+  <title>Luna Telecom Care · Synapsor Runner Lab</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <main class="shell">
+    <section class="brand" aria-labelledby="brand-title">
+      <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+      <p class="eyebrow">LUNA TELECOM × SYNAPSOR</p>
+      <h1 id="brand-title">Customer care that knows your plan—not anyone else’s.</h1>
+      <p class="brand-copy">See scoped AI in motion. Account facts travel through tenant- and principal-bound Runner tools, while every proposed change stays inside a reviewed policy.</p>
+      <div class="trust-row">
+        <span><i class="trust-dot"></i>Scoped reads</span>
+        <span><i class="trust-dot"></i>Reviewed writes</span>
+        <span><i class="trust-dot"></i>Auditable calls</span>
+      </div>
+      <div class="demo">
+        <strong>Demo access</strong>
+        <button class="demo-login" type="button" data-email="alex.atlas@example.test" data-account="US-100001">
+          <span>Family owner</span><small>alex.atlas@example.test</small>
+        </button>
+        <button class="demo-login" type="button" data-email="maya.atlas@example.test" data-account="US-100001">
+          <span>Family member</span><small>maya.atlas@example.test</small>
+        </button>
+        <button class="demo-login" type="button" data-email="eli.chen@example.test" data-account="US-100003">
+          <span>Individual owner</span><small>eli.chen@example.test</small>
+        </button>
+        <p>Password <code>demo123!</code></p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <form id="login-form" class="login">
+        <div class="login-heading">
+          <span class="secure-icon" aria-hidden="true">↗</span>
+          <div><p class="section-kicker">Secure customer portal</p><h2>Welcome back</h2></div>
+        </div>
+        <p class="login-copy">Sign in to start a scoped support session.</p>
+        <label>Email address <input id="email" type="email" value="alex.atlas@example.test" autocomplete="username" required></label>
+        <label>Password <input id="password" type="password" value="demo123!" autocomplete="current-password" required></label>
+        <label>Account number <input id="account-number" type="text" value="US-100001" list="account-choices" autocomplete="organization" placeholder="For multi-account customers"></label>
+        <datalist id="account-choices"></datalist>
+        <button class="primary-button" type="submit"><span>Open secure chat</span><span aria-hidden="true">→</span></button>
+        <p id="login-error" class="error" role="alert"></p>
+        <p class="login-footnote"><span aria-hidden="true">●</span> JWT stays in an HttpOnly cookie and never enters browser JavaScript.</p>
+      </form>
+
+      <section id="experience" class="experience hidden">
+        <section id="chat-panel" class="chat" aria-label="Customer support chat">
+          <header class="chat-header">
+            <div class="chat-header-left">
+              <span class="product-chip"><b>LUNA</b><i>×</i> SYNAPSOR</span>
+              <div class="agent-identity">
+                <span class="agent-avatar" aria-hidden="true">L</span>
+                <div><strong>Luna Care</strong><small id="identity"></small></div>
+                <span class="online-pill"><i></i>Online</span>
+              </div>
+            </div>
+            <div class="header-actions">
+              <button id="trace-mobile-toggle" class="icon-button trace-toggle" type="button" aria-controls="trace-panel" aria-expanded="false">Trace <span id="mobile-call-count">0</span></button>
+              <button id="logout" class="icon-button" type="button">Sign out</button>
+            </div>
+          </header>
+
+          <div id="messages" class="messages" aria-live="polite">
+            <div class="day-divider"><span>Secure session</span></div>
+            <article class="message assistant">
+              <div class="message-avatar" aria-hidden="true">L</div>
+              <div class="message-stack">
+                <div class="message-label">Luna Care</div>
+                <div class="bubble">Hi! I can help with your plan, members, lines, usage, billing, support cases, and reviewed change requests.</div>
+              </div>
+            </article>
+            <div class="suggestions" id="suggestions">
+              <button type="button">Who is on my family plan?</button>
+              <button type="button">What are my last two invoices?</button>
+              <button type="button">What is the status of my support issues?</button>
+              <button type="button">Add a note to my open support case.</button>
+            </div>
+          </div>
+
+          <form id="chat-form" class="composer">
+            <div class="composer-field">
+              <textarea id="message" rows="1" maxlength="4000" placeholder="Ask about your account…" required></textarea>
+              <small>Enter to send · Shift + Enter for a new line</small>
+            </div>
+            <button id="send-button" class="send-button" type="submit" aria-label="Send message">↑</button>
+          </form>
+        </section>
+
+        <aside id="trace-panel" class="trace-panel" aria-label="Synapsor Runner request trace">
+          <header class="trace-header">
+            <div>
+              <div class="trace-title-row"><span class="runner-glyph" aria-hidden="true">S</span><h2>Runner Trace</h2><span class="demo-badge">DEMO</span></div>
+              <p>Follow the model-to-data boundary</p>
+            </div>
+            <button id="trace-close" class="trace-close" type="button" aria-label="Close trace panel">×</button>
+          </header>
+
+          <div class="trace-legend" aria-label="Trace stages">
+            <span><i class="legend-dot model-dot"></i>Model saw</span>
+            <span><i class="legend-dot request-dot"></i>Runner received</span>
+            <span><i class="legend-dot response-dot"></i>Model got back</span>
+          </div>
+
+          <div id="trace-empty" class="trace-empty">
+            <div class="trace-orbit" aria-hidden="true"><span>S</span></div>
+            <h3>Ask a question to reveal the boundary</h3>
+            <p>You’ll see the model-visible context, its exact MCP arguments, Runner’s canonical tool name, and the scoped response.</p>
+            <div class="empty-flow" aria-hidden="true"><span>MODEL</span><b>→</b><span>RUNNER</span><b>→</b><span>MODEL</span></div>
+          </div>
+
+          <div id="trace-loading" class="trace-loading hidden" role="status">
+            <div class="scan-line"></div>
+            <span class="pulse-node"></span>
+            <div><strong>Tracing this request</strong><p id="trace-loading-label">Waiting for the model and Runner…</p></div>
+          </div>
+
+          <div id="trace-live" class="trace-live hidden" aria-live="polite">
+            <div class="live-header">
+              <span id="live-mode" class="live-mode">LIVE</span>
+              <div class="live-heading">
+                <strong id="live-title">Opening the model boundary</strong>
+                <p id="live-subtitle">Events will appear here as they happen.</p>
+              </div>
+              <div class="live-header-actions">
+                <nav id="sequence-nav" class="sequence-nav hidden" aria-label="Trace event navigation">
+                  <button id="sequence-prev" type="button" aria-label="Previous trace event" title="Previous event">←</button>
+                  <output id="sequence-position" aria-live="polite">0 / 0</output>
+                  <button id="sequence-next" type="button" aria-label="Next trace event" title="Next event">→</button>
+                </nav>
+                <button id="live-details" class="live-details hidden" type="button">Full trace</button>
+              </div>
+            </div>
+
+            <div id="live-lane" class="live-lane" data-stage="system" aria-label="Live request path">
+              <div class="live-stage" data-live-stage="model">
+                <span class="live-stage-icon">AI</span>
+                <div><strong>Model</strong><small>sees context</small></div>
+              </div>
+              <span class="live-connector" aria-hidden="true"><i></i></span>
+              <div class="live-stage" data-live-stage="runner">
+                <span class="live-stage-icon">S</span>
+                <div><strong>Runner</strong><small>enforces scope</small></div>
+              </div>
+              <span class="live-connector" aria-hidden="true"><i></i></span>
+              <div class="live-stage" data-live-stage="response">
+                <span class="live-stage-icon">{ }</span>
+                <div><strong>Result</strong><small>returns to model</small></div>
+              </div>
+            </div>
+
+            <div id="live-events" class="live-events"></div>
+          </div>
+
+          <div id="trace-content" class="trace-content hidden">
+            <div class="trace-toolbar">
+              <label for="trace-selector">Interaction</label>
+              <select id="trace-selector" aria-label="Choose a traced interaction"></select>
+              <div class="trace-toolbar-actions">
+                <label class="speed-control" for="replay-speed"><span>Replay</span>
+                  <select id="replay-speed" aria-label="Replay speed">
+                    <option value="0.25">0.25×</option>
+                    <option value="0.5" selected>0.5×</option>
+                    <option value="1">1×</option>
+                  </select>
+                </label>
+                <button id="replay-trace" class="replay-button" type="button">↻ Replay flow</button>
+                <button id="inspect-sequence" class="inspect-button" type="button">Inspect sequence</button>
+                <button id="copy-trace" class="copy-all" type="button">Copy trace</button>
+              </div>
+            </div>
+            <div id="trace-summary" class="trace-summary"></div>
+            <div class="trace-notice"><span aria-hidden="true">i</span><p id="trace-notice"></p></div>
+            <div id="trace-sections" class="trace-sections"></div>
+          </div>
+        </aside>
+        <div id="trace-scrim" class="trace-scrim"></div>
+      </section>
+    </section>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

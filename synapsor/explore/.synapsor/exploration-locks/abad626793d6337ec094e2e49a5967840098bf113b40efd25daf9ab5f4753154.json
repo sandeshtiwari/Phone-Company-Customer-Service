@@ -1,0 +1,216 @@
+{
+  "schema_version": "synapsor.generation-lock.v1",
+  "compiler_version": "1.7.0",
+  "spec_version": "1.9.0",
+  "engine": "postgres",
+  "database_server_version": "PostgreSQL 16.4 (Debian 16.4-1.pgdg120+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit",
+  "database_server_tier": "full",
+  "database_server_authority": {
+    "schema_version": "synapsor.database-server-authority.v1",
+    "engine": "postgres",
+    "version_line": "16",
+    "features": {
+      "automatic_numeric_bands": true,
+      "schema_check_constraints": true
+    }
+  },
+  "source_env": "DATABASE_URL",
+  "inspected_schema": "customer_explore",
+  "schema_fingerprint": "sha256:45965b0ed41ee89cfa0cb2cdb9fdd23bb583b58fda566fec6dc2a65ef27c2409",
+  "role_posture_fingerprint": "sha256:082872dc461dacfe8c9ea1d728089de729f1d8ddbc51c2cc9292d1ddbb45ce4f",
+  "evidence_fingerprint": "sha256:df7d57c4cf508cdb42fedf914d2f174250221a6ba91ed652697e328674b01312",
+  "generated_contract_digest": "sha256:6fe6f429f52a87592a43461a7c44f0b88cdacfd06fbe0b29530c6f83ea4ed8c2",
+  "reviewed_overrides_digest": "sha256:22dde61ee141b144b197bb27cd8f55cd4c4401f507ebe7c096565066a8883a6d",
+  "protected_authority": [
+    "customer_explore.accounts",
+    "customer_explore.billing_preferences",
+    "customer_explore.invoices",
+    "customer_explore.payments",
+    "customer_explore.service_lines",
+    "customer_explore.subscribers",
+    "customer_explore.subscriptions",
+    "customer_explore.support_cases",
+    "customer_explore.usage_daily"
+  ],
+  "reporting_timezone": "UTC",
+  "trusted_context_authority": {
+    "schema_version": "synapsor.configured-trusted-context-authority.v1",
+    "provider": "http_claims",
+    "tenant_binding": "account_id",
+    "principal_binding": "viewer_principal_id",
+    "tenant_claim": "tenant_id",
+    "principal_claim": "sub"
+  },
+  "trusted_context_fingerprint": "sha256:22175a31eb7c0fe790b8103bbc0d8f43ca1e0fffe33ba64efc0b4565740ca5ef",
+  "configured_trusted_context_used_for_inference": true,
+  "authority_dependencies": {
+    "schema_version": "synapsor.authority-dependencies.v1",
+    "credential_posture_fingerprint": "sha256:79bd5112f22ac532294fc711a8056eaf9e7eb88e49faf3a2a6a07b24e4dd726e",
+    "resources": {
+      "customer_explore.accounts": {
+        "schema": "customer_explore",
+        "table": "accounts",
+        "fields": [
+          "account_id",
+          "account_kind",
+          "account_name",
+          "billing_cycle_day",
+          "country_code",
+          "created_at",
+          "currency_code",
+          "explore_row_id",
+          "status",
+          "viewer_principal_id"
+        ],
+        "fingerprint": "sha256:c95c3039cedc40118748c246cc33c14a7e935b0607f988d3d0f52decd391a7a4"
+      },
+      "customer_explore.billing_preferences": {
+        "schema": "customer_explore",
+        "table": "billing_preferences",
+        "fields": [
+          "account_id",
+          "autopay_enabled",
+          "billing_preference_id",
+          "explore_row_id",
+          "monthly_spend_alert_cents",
+          "paperless_billing",
+          "updated_at",
+          "version",
+          "viewer_principal_id"
+        ],
+        "fingerprint": "sha256:5135bc7c7b3c964ec4fbe671f78081f81c94df17e306fb9ce89a90de0106224d"
+      },
+      "customer_explore.invoices": {
+        "schema": "customer_explore",
+        "table": "invoices",
+        "fields": [
+          "account_id",
+          "adjustments_cents",
+          "balance_cents",
+          "created_at",
+          "due_date",
+          "explore_row_id",
+          "invoice_id",
+          "period_end",
+          "period_start",
+          "status",
+          "subtotal_cents",
+          "taxes_cents",
+          "total_cents",
+          "updated_at",
+          "viewer_principal_id"
+        ],
+        "fingerprint": "sha256:9c7b29b8f8ba8502c593e23296aea1a6627a5a6820ad7fd1abf3d1b101a5f1ed"
+      },
+      "customer_explore.payments": {
+        "schema": "customer_explore",
+        "table": "payments",
+        "fields": [
+          "account_id",
+          "amount_cents",
+          "explore_row_id",
+          "invoice_id",
+          "paid_at",
+          "payment_id",
+          "status",
+          "viewer_principal_id"
+        ],
+        "fingerprint": "sha256:652d9b89a1c10bc7454252373baae63a35baa6414c26e4d6efa4fabe2592a692"
+      },
+      "customer_explore.service_lines": {
+        "schema": "customer_explore",
+        "table": "service_lines",
+        "fields": [
+          "account_id",
+          "activated_on",
+          "data_limit_gb",
+          "device_name",
+          "explore_row_id",
+          "international_roaming_enabled",
+          "line_id",
+          "line_label",
+          "status",
+          "subscriber_id",
+          "updated_at",
+          "version",
+          "viewer_principal_id"
+        ],
+        "fingerprint": "sha256:11227a1d4e14ec81feb0e0b844b45a5fccfecb47cfb8ad77b63249d6aac53eb6"
+      },
+      "customer_explore.subscribers": {
+        "schema": "customer_explore",
+        "table": "subscribers",
+        "fields": [
+          "account_id",
+          "created_at",
+          "display_name",
+          "explore_row_id",
+          "relationship_label",
+          "status",
+          "subscriber_id",
+          "viewer_principal_id"
+        ],
+        "fingerprint": "sha256:547fddc8fa77186d2edc153ea91d8928fcc83ba67bb52c63cac473fe729b88e3"
+      },
+      "customer_explore.subscriptions": {
+        "schema": "customer_explore",
+        "table": "subscriptions",
+        "fields": [
+          "account_id",
+          "base_monthly_cents",
+          "contract_end_date",
+          "data_policy",
+          "effective_from",
+          "explore_row_id",
+          "included_lines",
+          "international_day_pass",
+          "plan_code",
+          "plan_display_name",
+          "subscription_id",
+          "updated_at",
+          "version",
+          "viewer_principal_id"
+        ],
+        "fingerprint": "sha256:cce025c5c39d7fce5d20194a858ac67975e951d5f917c16a9fb2c4b5d1fbc03b"
+      },
+      "customer_explore.support_cases": {
+        "schema": "customer_explore",
+        "table": "support_cases",
+        "fields": [
+          "account_id",
+          "case_id",
+          "created_at",
+          "explore_row_id",
+          "priority",
+          "status",
+          "subject",
+          "updated_at",
+          "viewer_principal_id"
+        ],
+        "fingerprint": "sha256:42027f05f7a7d9115556d05de5df1a8dfa05cb290a735a32a5fdfb207cfecc5e"
+      },
+      "customer_explore.usage_daily": {
+        "schema": "customer_explore",
+        "table": "usage_daily",
+        "fields": [
+          "account_id",
+          "data_mb",
+          "device_name",
+          "explore_row_id",
+          "line_id",
+          "line_label",
+          "relationship_label",
+          "roaming_data_mb",
+          "sms_count",
+          "subscriber_name",
+          "usage_date",
+          "usage_id",
+          "viewer_principal_id",
+          "voice_minutes"
+        ],
+        "fingerprint": "sha256:a32ee146dac4c590813b56dac86d18177c05c148671dbf3109b70875ebcb2cc5"
+      }
+    },
+    "relationships": {}
+  }
+}

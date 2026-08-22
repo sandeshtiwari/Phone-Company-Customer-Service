@@ -1,0 +1,192 @@
+name: telecom-customer-service
+
+services:
+  postgres:
+    image: postgres:16.4-bookworm
+    environment:
+      POSTGRES_DB: telecom_customer_service
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_dev_pw
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5544}:5432"
+    volumes:
+      - telecom_postgres_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d telecom_customer_service"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:?Set OPENAI_API_KEY or use --env-file}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5.6-luna}
+      TELECOM_AUTH_DATABASE_URL: postgresql://telecom_api:telecom_api_pw@postgres:5432/telecom_customer_service
+      TELECOM_APP_DATABASE_URL: postgresql://telecom_api:telecom_api_pw@postgres:5432/telecom_customer_service
+      TELECOM_WRITE_DATABASE_URL: postgresql://synapsor_writer:synapsor_writer_pw@postgres:5432/telecom_customer_service
+      TELECOM_CONTROL_DATABASE_URL: postgresql://telecom_handler_ledger:telecom_handler_ledger_pw@postgres:5432/synapsor_control
+      JWT_ISSUER: https://telecom.local
+      JWT_AUDIENCES: https://telecom.local/mcp/explore,https://telecom.local/mcp/actions
+      JWT_KEY_PATH: /runtime/jwt-private.pem
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      EXPLORE_MCP_URL: http://runner-explore:8766/mcp
+      ACTIONS_MCP_URL: http://runner-actions:8767/mcp
+      SYNAPSOR_APP_HANDLER_TOKEN: telecom-handler-dev-token-change-me
+      SYNAPSOR_APP_HANDLER_SIGNING_SECRET: telecom-handler-signing-secret-change-me
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:8000"
+    volumes:
+      - ./.runtime:/runtime
+    depends_on:
+      postgres:
+        condition: service_healthy
+      schema-migrate:
+        condition: service_completed_successfully
+      control-store-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz')"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  schema-migrate:
+    image: postgres:16.4-bookworm
+    environment:
+      PGPASSWORD: postgres_dev_pw
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        psql -h postgres -U postgres -d telecom_customer_service \
+          -v ON_ERROR_STOP=1 -f /migrations/001_helpdesk.sql
+    volumes:
+      - ./db/migrations:/migrations:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  control-store-init:
+    build:
+      context: ./synapsor
+    user: root
+    environment:
+      SYNAPSOR_CONTROL_DATABASE_URL: postgresql://synapsor_control:synapsor_control_pw@postgres:5432/synapsor_control
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        synapsor-runner store shared-postgres apply-migration --url-env SYNAPSOR_CONTROL_DATABASE_URL --schema synapsor_runner --yes
+        synapsor-runner store shared-postgres apply-migration --url-env SYNAPSOR_CONTROL_DATABASE_URL --schema synapsor_actions --yes
+        psql "$${SYNAPSOR_CONTROL_DATABASE_URL}" -v ON_ERROR_STOP=1 -c "GRANT USAGE ON SCHEMA synapsor_actions TO telecom_handler_ledger; GRANT SELECT ON ALL TABLES IN SCHEMA synapsor_actions TO telecom_handler_ledger; ALTER DEFAULT PRIVILEGES FOR ROLE synapsor_control IN SCHEMA synapsor_actions GRANT SELECT ON TABLES TO telecom_handler_ledger;"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  runner-explore:
+    build:
+      context: ./synapsor
+    working_dir: /app
+    command:
+      - synapsor-runner
+      - mcp
+      - serve
+      - --transport
+      - streamable-http
+      - --production-explore
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8766"
+      - --trusted-tls-proxy
+      - --config
+      - /app/synapsor/explore/synapsor.runner.json
+    environment:
+      DATABASE_URL: postgresql://synapsor_explore_reader:synapsor_explore_reader_pw@postgres:5432/telecom_customer_service
+      SYNAPSOR_CONTROL_DATABASE_URL: postgresql://synapsor_control:synapsor_control_pw@postgres:5432/synapsor_control
+      SYNAPSOR_EXPLORE_BUDGET_HMAC_KEY: ${SYNAPSOR_EXPLORE_BUDGET_HMAC_KEY:-mY8kz2NwR4vQ7sL1pT6cX9bF3hJ5dG0uA2eK8nP4qWs}
+    volumes:
+      - ./synapsor/explore:/app/synapsor/explore:ro
+      - ./.runtime/jwt-public.pem:/run/secrets/jwt-public.pem:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8766:8766"
+    restart: unless-stopped
+
+  runner-actions:
+    build:
+      context: ./synapsor
+    working_dir: /app
+    command:
+      - synapsor-runner
+      - mcp
+      - serve
+      - --transport
+      - streamable-http
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8767"
+      - --trusted-tls-proxy
+      - --config
+      - /app/synapsor/actions/synapsor.runner.json
+      - --alias-mode
+      - openai
+      - --result-format
+      - v2
+    environment:
+      DATABASE_URL: postgresql://synapsor_reader:synapsor_reader_pw@postgres:5432/telecom_customer_service
+      DATABASE_WRITE_URL: postgresql://synapsor_writer:synapsor_writer_pw@postgres:5432/telecom_customer_service
+      SYNAPSOR_CONTROL_DATABASE_URL: postgresql://synapsor_control:synapsor_control_pw@postgres:5432/synapsor_control
+      TELECOM_APP_HANDLER_URL: http://backend:8000/internal/synapsor/writeback
+      TELECOM_APP_HANDLER_TOKEN: telecom-handler-dev-token-change-me
+      TELECOM_APP_HANDLER_SIGNING_SECRET: telecom-handler-signing-secret-change-me
+    volumes:
+      - ./synapsor/actions:/app/synapsor/actions:ro
+      - ./.runtime/jwt-public.pem:/run/secrets/jwt-public.pem:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8767:8767"
+    restart: unless-stopped
+
+  runner-auto-apply:
+    build:
+      context: ./synapsor
+    working_dir: /app
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        while true; do
+          synapsor-runner apply --all-approved --yes --max 20 --config /app/synapsor/actions/synapsor.runner.json
+          sleep 5
+        done
+    environment:
+      DATABASE_URL: postgresql://synapsor_reader:synapsor_reader_pw@postgres:5432/telecom_customer_service
+      DATABASE_WRITE_URL: postgresql://synapsor_writer:synapsor_writer_pw@postgres:5432/telecom_customer_service
+      SYNAPSOR_CONTROL_DATABASE_URL: postgresql://synapsor_control:synapsor_control_pw@postgres:5432/synapsor_control
+      TELECOM_APP_HANDLER_URL: http://backend:8000/internal/synapsor/writeback
+      TELECOM_APP_HANDLER_TOKEN: telecom-handler-dev-token-change-me
+      TELECOM_APP_HANDLER_SIGNING_SECRET: telecom-handler-signing-secret-change-me
+    volumes:
+      - ./synapsor/actions:/app/synapsor/actions:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+      runner-actions:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  telecom_postgres_data:

@@ -1,0 +1,10 @@
+.env
+.runtime/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+synapsor/explore/synapsor/generated/
+synapsor/explore/.synapsor/explore-audit.key
+synapsor/explore/.synapsor/local.db*
+synapsor/actions/.synapsor/

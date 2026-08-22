@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "mode": "review",
+  "storage": {
+    "shared_postgres": {
+      "mode": "runtime_store",
+      "url_env": "SYNAPSOR_CONTROL_DATABASE_URL",
+      "schema": "synapsor_actions"
+    }
+  },
+  "sources": {
+    "telecom_postgres": {
+      "engine": "postgres",
+      "read_url_env": "DATABASE_URL",
+      "write_url_env": "DATABASE_WRITE_URL",
+      "statement_timeout_ms": 3000,
+      "database_scope": {
+        "mode": "postgres_rls",
+        "tenant_setting": "synapsor.tenant_id",
+        "principal_setting": "synapsor.principal"
+      },
+      "credential_scope": { "mode": "shared" },
+      "receipts": { "authority": "runner_ledger" }
+    }
+  },
+  "trusted_context": { "provider": "http_claims" },
+  "session_auth": {
+    "provider": "jwt_asymmetric",
+    "algorithms": ["RS256"],
+    "public_key_path": "/run/secrets/jwt-public.pem",
+    "issuer": "https://telecom.local",
+    "audience": "https://telecom.local/mcp/actions",
+    "tenant_claim": "tenant_id",
+    "principal_claim": "sub",
+    "clock_skew_seconds": 30
+  },
+  "http_security": {
+    "deployment": "shared",
+    "channel": "trusted_tls_proxy",
+    "allowed_hosts": ["telecom.local", "runner-actions:8767", "127.0.0.1:8767", "localhost:8767"],
+    "oauth_resource": {
+      "resource": "https://telecom.local/mcp/actions",
+      "authorization_servers": ["https://telecom.local"],
+      "scopes_supported": ["synapsor.plan"],
+      "required_scopes": ["synapsor.plan"],
+      "resource_name": "Luna Telecom reviewed plan actions"
+    }
+  },
+  "executors": {
+    "telecom_app_handler": {
+      "type": "http_handler",
+      "url_env": "TELECOM_APP_HANDLER_URL",
+      "method": "POST",
+      "auth": {
+        "type": "bearer_env",
+        "token_env": "TELECOM_APP_HANDLER_TOKEN"
+      },
+      "signing_secret_env": "TELECOM_APP_HANDLER_SIGNING_SECRET",
+      "timeout_ms": 8000
+    }
+  },
+  "contracts": ["./telecom-actions.contract.json"],
+  "capabilities": [],
+  "rate_limits": {
+    "enabled": true,
+    "default": { "requests": 60, "window_seconds": 60 }
+  },
+  "approvals": { "disable_auto_approval": false },
+  "strict": true,
+  "result_format": 2
+}

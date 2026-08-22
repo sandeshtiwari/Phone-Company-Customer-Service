@@ -1,0 +1,224 @@
+{
+  "schema_version": "synapsor.auto-boundary-overrides.v1",
+  "resources": {
+    "customer_explore.accounts": {
+      "principal_key": {
+        "value": "viewer_principal_id",
+        "actor": "runner-config",
+        "reason": "Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary activation is still required.",
+        "decided_at": "2026-08-21T20:36:31.799Z"
+      },
+      "minimum_cohort": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    "customer_explore.billing_preferences": {
+      "principal_key": {
+        "value": "viewer_principal_id",
+        "actor": "runner-config",
+        "reason": "Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary activation is still required.",
+        "decided_at": "2026-08-21T20:36:31.799Z"
+      },
+      "minimum_cohort": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    "customer_explore.invoices": {
+      "principal_key": {
+        "value": "viewer_principal_id",
+        "actor": "runner-config",
+        "reason": "Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary activation is still required.",
+        "decided_at": "2026-08-21T20:36:31.799Z"
+      },
+      "minimum_cohort": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    "customer_explore.payments": {
+      "principal_key": {
+        "value": "viewer_principal_id",
+        "actor": "runner-config",
+        "reason": "Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary activation is still required.",
+        "decided_at": "2026-08-21T20:36:31.799Z"
+      },
+      "minimum_cohort": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    "customer_explore.service_lines": {
+      "principal_key": {
+        "value": "viewer_principal_id",
+        "actor": "runner-config",
+        "reason": "Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary activation is still required.",
+        "decided_at": "2026-08-21T20:36:31.799Z"
+      },
+      "minimum_cohort": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    "customer_explore.subscribers": {
+      "principal_key": {
+        "value": "viewer_principal_id",
+        "actor": "runner-config",
+        "reason": "Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary activation is still required.",
+        "decided_at": "2026-08-21T20:36:31.799Z"
+      },
+      "minimum_cohort": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      },
+      "fields": {
+        "display_name": {
+          "exposure": "allow_reviewed_use",
+          "actor": "sandeshtiwari",
+          "reason": "Authenticated family owners and managers need member names for customer service; direct principal entitlement prevents disclosure to unrelated members.",
+          "decided_at": "2026-08-21T20:38:26.878Z"
+        }
+      }
+    },
+    "customer_explore.subscriptions": {
+      "principal_key": {
+        "value": "viewer_principal_id",
+        "actor": "runner-config",
+        "reason": "Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary activation is still required.",
+        "decided_at": "2026-08-21T20:36:31.799Z"
+      },
+      "minimum_cohort": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    "customer_explore.support_cases": {
+      "principal_key": {
+        "value": "viewer_principal_id",
+        "actor": "runner-config",
+        "reason": "Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary activation is still required.",
+        "decided_at": "2026-08-21T20:36:31.799Z"
+      },
+      "minimum_cohort": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      }
+    },
+    "customer_explore.usage_daily": {
+      "metadata": {
+        "label": "Daily member usage",
+        "description": "Daily mobile usage already scoped to the authenticated account and each principal entitlement.",
+        "actor": "demo-boundary-reviewer",
+        "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+        "decided_at": "2026-08-21T22:15:11.598Z"
+      },
+      "principal_key": {
+        "value": "viewer_principal_id",
+        "actor": "runner-config",
+        "reason": "Runner config principal_binding explicitly names inspected non-null column viewer_principal_id; exact boundary activation is still required.",
+        "decided_at": "2026-08-21T20:36:31.799Z"
+      },
+      "minimum_cohort": {
+        "value": 1,
+        "actor": "sandeshtiwari",
+        "reason": "Each result is already constrained to one authenticated customer account and principal entitlement projection.",
+        "decided_at": "2026-08-21T20:37:48.109Z"
+      },
+      "exact_numeric_grouping": {
+        "device_name": {
+          "actor": "demo-boundary-reviewer",
+          "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+          "decided_at": "2026-08-21T22:15:11.599Z"
+        },
+        "line_label": {
+          "actor": "demo-boundary-reviewer",
+          "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+          "decided_at": "2026-08-21T22:15:11.599Z"
+        },
+        "relationship_label": {
+          "actor": "demo-boundary-reviewer",
+          "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+          "decided_at": "2026-08-21T22:15:11.599Z"
+        },
+        "subscriber_name": {
+          "actor": "demo-boundary-reviewer",
+          "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+          "decided_at": "2026-08-21T22:15:11.599Z"
+        }
+      },
+      "field_metadata": {
+        "device_name": {
+          "label": "Device name",
+          "description": "Reviewed device model currently attached to the line.",
+          "actor": "demo-boundary-reviewer",
+          "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+          "decided_at": "2026-08-21T22:15:11.598Z"
+        },
+        "line_label": {
+          "label": "Line label",
+          "description": "Customer-facing label for the usage-producing service line.",
+          "actor": "demo-boundary-reviewer",
+          "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+          "decided_at": "2026-08-21T22:15:11.598Z"
+        },
+        "relationship_label": {
+          "label": "Member relationship",
+          "description": "Reviewed family or account relationship label for the member.",
+          "actor": "demo-boundary-reviewer",
+          "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+          "decided_at": "2026-08-21T22:15:11.598Z"
+        },
+        "subscriber_name": {
+          "label": "Member name",
+          "description": "Reviewed account member who owns the usage-producing line.",
+          "actor": "demo-boundary-reviewer",
+          "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+          "decided_at": "2026-08-21T22:15:11.598Z"
+        }
+      },
+      "fields": {
+        "device_name": {
+          "exposure": "allow_reviewed_use",
+          "actor": "demo-boundary-reviewer",
+          "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+          "decided_at": "2026-08-21T22:15:11.598Z"
+        },
+        "line_label": {
+          "exposure": "allow_reviewed_use",
+          "actor": "demo-boundary-reviewer",
+          "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+          "decided_at": "2026-08-21T22:15:11.598Z"
+        },
+        "relationship_label": {
+          "exposure": "allow_reviewed_use",
+          "actor": "demo-boundary-reviewer",
+          "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+          "decided_at": "2026-08-21T22:15:11.598Z"
+        },
+        "subscriber_name": {
+          "exposure": "allow_reviewed_use",
+          "actor": "demo-boundary-reviewer",
+          "reason": "Allow authenticated customers to compare aggregate usage by visible account member, line, relationship, or device without grouping on identifiers.",
+          "decided_at": "2026-08-21T22:15:11.598Z"
+        }
+      }
+    }
+  }
+}
