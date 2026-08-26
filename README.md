@@ -165,17 +165,16 @@ The model can inspect and propose. It cannot approve proposals, run `apply`, exe
 
 ## Demo Runner Trace UI
 
-After login, the browser opens a two-pane customer-support workspace. While an answer is running, the authenticated `POST /api/chat/stream` endpoint sends newline-delimited JSON events to the browser. The trace panel animates the real model → Runner → model path as each recorder event occurs; it does not estimate or fabricate progress. Every event displays its syntax-highlighted JSON payload immediately.
+After login, the browser opens a two-pane customer-support workspace. While an answer is running, the authenticated `POST /api/chat/stream` endpoint sends newline-delimited JSON events to the browser. The trace panel animates the real model → Runner path as each recorder event occurs; it does not estimate or fabricate progress.
 
 Every completed answer also includes an ephemeral **Runner Trace** that demonstrates the model/data boundary:
 
-- **What the model saw:** the effective system instructions, conversation input items, prior tool results, raw model output items, and model-visible MCP tool catalog.
-- **What the model sent:** the OpenAI-safe tool name and exact arguments emitted by the model.
-- **What Runner received:** the canonical Synapsor MCP tool name after local alias translation and the exact request arguments.
-- **What the model got back:** Runner's structured MCP response, status, and request duration.
-- **Run summary:** model turns, Runner calls, token usage, and end-to-end duration.
+- **What the model sees:** effective instructions, conversation input items, prior tool results, and the model-visible MCP catalog.
+- **What the model sends:** the exact tool name and arguments emitted by the model, including any local alias translation to Runner's canonical name.
+- **Runner validation:** an honest response-derived summary of Runner's reported decision, outcome, boundary/evidence/audit handles, or refusal details. It does not invent unreported internal checks.
+- **Decoded Runner response:** Runner's complete JSON body decoded from the MCP text envelope, plus app-recorded status and duration, with important business values pulled into high-contrast cards. This is semantically complete but is not the byte-for-byte MCP transport wrapper.
 
-The interface includes expandable trace stages, interaction history for the current browser page, copy controls, responsive mobile presentation, and syntax-highlighted JSON. Click **View Runner calls** below an assistant answer to open the complete inspector. From there, choose `0.25×`, `0.5×`, or `1×` and click **Replay flow** to reconstruct the event sequence at a readable speed; replay uses the event offsets captured during the real request. Click **Inspect sequence** to load every event immediately, then use **Previous** and **Next** to move between highlighted payloads. The same navigation appears after a live run and can pause an in-progress replay for closer inspection.
+Only those four semantic event types appear in the panel. Full syntax-highlighted JSON remains available under **Inspect JSON**, but is collapsed when it would distract from the returned account, billing, usage, or helpdesk data. The interface also includes interaction history for the current browser page, copy controls, responsive mobile presentation, and replay. Choose `0.25×`, `0.5×`, or `1×` and click **Replay flow** to reconstruct the event sequence at a readable speed; replay uses offsets captured during the real request. Click **Inspect sequence**, then use **Previous** and **Next** to move through the exact captured sequence.
 
 This is intentionally a demonstration feature, not a recommended production transcript store. Trace data is streamed only to the authenticated request and retained only in page memory; the non-streaming `/api/chat` endpoint remains available for API compatibility. Browser trace history is discarded on reload. It is not written to the telecom database or Runner's audit ledger. Credential-shaped fields are redacted, JWTs remain outside model context, and the built-in Agents SDK trace exporter is configured not to include sensitive generation/tool payloads.
 

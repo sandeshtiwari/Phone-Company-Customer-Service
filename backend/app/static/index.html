@@ -105,16 +105,17 @@
           </header>
 
           <div class="trace-legend" aria-label="Trace stages">
-            <span><i class="legend-dot model-dot"></i>Model saw</span>
-            <span><i class="legend-dot request-dot"></i>Runner received</span>
-            <span><i class="legend-dot response-dot"></i>Model got back</span>
+            <span><i class="legend-dot model-dot"></i>Model sees</span>
+            <span><i class="legend-dot request-dot"></i>Model sends</span>
+            <span><i class="legend-dot validation-dot"></i>Runner validates</span>
+            <span><i class="legend-dot response-dot"></i>Runner responds</span>
           </div>
 
           <div id="trace-empty" class="trace-empty">
             <div class="trace-orbit" aria-hidden="true"><span>S</span></div>
             <h3>Ask a question to reveal the boundary</h3>
-            <p>You’ll see the model-visible context, its exact MCP arguments, Runner’s canonical tool name, and the scoped response.</p>
-            <div class="empty-flow" aria-hidden="true"><span>MODEL</span><b>→</b><span>RUNNER</span><b>→</b><span>MODEL</span></div>
+            <p>You’ll see only four things: what the model sees, what it sends, Runner’s reported validation, and Runner’s scoped response.</p>
+            <div class="empty-flow" aria-hidden="true"><span>SEES</span><b>→</b><span>SENDS</span><b>→</b><span>VALIDATES</span><b>→</b><span>RESPONDS</span></div>
           </div>
 
           <div id="trace-loading" class="trace-loading hidden" role="status">
@@ -140,20 +141,25 @@
               </div>
             </div>
 
-            <div id="live-lane" class="live-lane" data-stage="system" aria-label="Live request path">
+            <div id="live-lane" class="live-lane" data-stage="model" aria-label="Live request path">
               <div class="live-stage" data-live-stage="model">
                 <span class="live-stage-icon">AI</span>
-                <div><strong>Model</strong><small>sees context</small></div>
+                <div><strong>Model sees</strong><small>context + tools</small></div>
               </div>
               <span class="live-connector" aria-hidden="true"><i></i></span>
-              <div class="live-stage" data-live-stage="runner">
+              <div class="live-stage" data-live-stage="request">
+                <span class="live-stage-icon">→</span>
+                <div><strong>Model sends</strong><small>tool + arguments</small></div>
+              </div>
+              <span class="live-connector" aria-hidden="true"><i></i></span>
+              <div class="live-stage" data-live-stage="validation">
                 <span class="live-stage-icon">S</span>
-                <div><strong>Runner</strong><small>enforces scope</small></div>
+                <div><strong>Runner validates</strong><small>reported decision</small></div>
               </div>
               <span class="live-connector" aria-hidden="true"><i></i></span>
               <div class="live-stage" data-live-stage="response">
                 <span class="live-stage-icon">{ }</span>
-                <div><strong>Result</strong><small>returns to model</small></div>
+                <div><strong>Runner responds</strong><small>verified result</small></div>
               </div>
             </div>
 

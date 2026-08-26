@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, is_dataclass
 from datetime import date, datetime, timezone
 from enum import Enum
+import json
 from time import perf_counter
 from typing import Any, Callable
 from uuid import UUID, uuid4
@@ -21,6 +22,75 @@ _SECRET_KEYS = {
     "private_key",
     "raw_token",
     "refresh_token",
+}
+
+_HIGHLIGHT_KEYS = {
+    "account_name": "Account",
+    "account_kind": "Account type",
+    "adjustments_cents": "Adjustments",
+    "amount_due": "Amount due",
+    "amount_cents": "Payment amount",
+    "autopay_enabled": "AutoPay",
+    "base_monthly_cents": "Monthly plan price",
+    "balance_cents": "Balance remaining",
+    "balance_remaining": "Balance remaining",
+    "billing_period_end": "Billing period end",
+    "billing_period_start": "Billing period start",
+    "case_number": "Case",
+    "category": "Category",
+    "customer_note_count": "Customer notes",
+    "data_limit_gb": "Data limit (GB)",
+    "data_mb": "Data used (MB)",
+    "data_used_gb": "Data used (GB)",
+    "device_name": "Device",
+    "display_name": "Member",
+    "due_date": "Due date",
+    "invoice_number": "Invoice",
+    "included_lines": "Included lines",
+    "international_day_pass": "International day pass",
+    "international_roaming_enabled": "International roaming",
+    "latest_customer_note": "Latest customer note",
+    "latest_update_summary": "Latest update",
+    "new_value": "New value",
+    "note_text": "Note",
+    "line_label": "Line",
+    "monthly_spend_alert_cents": "Monthly spend alert",
+    "paperless_billing": "Paperless billing",
+    "period_end": "Billing period end",
+    "period_start": "Billing period start",
+    "phone_last4": "Phone ending",
+    "plan_code": "Plan code",
+    "plan_display_name": "Plan",
+    "plan_name": "Plan",
+    "previous_value": "Previous value",
+    "priority": "Priority",
+    "proposal_id": "Proposal",
+    "relationship_label": "Relationship",
+    "roaming_data_mb": "Roaming data (MB)",
+    "sms_count": "Messages",
+    "source_database_changed": "Database changed",
+    "status": "Status",
+    "subject": "Subject",
+    "subtotal_cents": "Subtotal",
+    "taxes_cents": "Taxes",
+    "total_cents": "Invoice total",
+    "total_amount": "Invoice total",
+    "usage_date": "Usage date",
+    "usage_month": "Usage month",
+    "voice_minutes": "Voice minutes",
+}
+
+_VALIDATION_KEYS = {
+    "approval_status": "Approval status",
+    "boundary_digest": "Boundary digest",
+    "decision": "Decision",
+    "error_code": "Error code",
+    "evidence_handle": "Evidence handle",
+    "evidence_id": "Evidence ID",
+    "plan_fingerprint": "Plan fingerprint",
+    "proposal_id": "Proposal ID",
+    "query_audit_id": "Query audit ID",
+    "query_id": "Query ID",
 }
 
 
@@ -58,6 +128,149 @@ def safe_json(value: Any, *, key: str = "") -> Any:
     return repr(value)
 
 
+def _decode_runner_payload(response: Any) -> Any:
+    """Prefer Runner's JSON body while retaining the unmodified MCP response elsewhere."""
+    if not isinstance(response, dict):
+        return response
+    structured = response.get("structured_content") or response.get("structuredContent")
+    if structured:
+        return structured
+    for item in response.get("content") or []:
+        if not isinstance(item, dict) or not isinstance(item.get("text"), str):
+            continue
+        try:
+            return json.loads(item["text"])
+        except json.JSONDecodeError:
+            continue
+    return response
+
+
+def _expand_embedded_json(value: Any, *, depth: int = 0) -> Any:
+    """Make JSON encoded inside MCP text fields readable in the demo inspector."""
+    if depth >= 10:
+        return value
+    if isinstance(value, str):
+        candidate = value.strip()
+        if not candidate.startswith(("{", "[")):
+            return value
+        try:
+            decoded = json.loads(candidate)
+        except json.JSONDecodeError:
+            return value
+        return _expand_embedded_json(decoded, depth=depth + 1)
+    if isinstance(value, dict):
+        return {
+            key: _expand_embedded_json(child, depth=depth + 1)
+            for key, child in value.items()
+        }
+    if isinstance(value, list):
+        return [_expand_embedded_json(child, depth=depth + 1) for child in value]
+    return value
+
+
+def _walk_scalars(value: Any, path: tuple[str, ...] = ()):
+    if isinstance(value, dict):
+        for key, child in value.items():
+            yield from _walk_scalars(child, (*path, str(key)))
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            yield from _walk_scalars(child, (*path, str(index + 1)))
+    elif value is None or isinstance(value, (str, int, float, bool)):
+        yield path, value
+
+
+def _read_outcome(decoded: Any) -> tuple[Any, Any, Any]:
+    if not isinstance(decoded, dict):
+        return None, None, None
+    ok = decoded.get("ok")
+    outcome = decoded.get("outcome")
+    outcome_type = outcome.get("type") if isinstance(outcome, dict) else None
+    status = decoded.get("status")
+    if isinstance(outcome, dict):
+        status = status or outcome.get("status")
+        result = outcome.get("result")
+        if isinstance(result, dict):
+            status = status or result.get("status")
+    return ok, outcome_type, status
+
+
+def _extract_highlights(decoded: Any, *, maximum: int = 14) -> list[dict[str, Any]]:
+    highlights: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    for path, value in _walk_scalars(decoded):
+        if not path or path[-1] not in _HIGHLIGHT_KEYS or value in (None, ""):
+            continue
+        key = path[-1]
+        if key == "status" and str(value).lower() in {"ok", "success"}:
+            continue
+        identity = (key, str(value))
+        if identity in seen:
+            continue
+        seen.add(identity)
+        label = _HIGHLIGHT_KEYS[key]
+        numeric_parent = next((part for part in reversed(path[:-1]) if part.isdigit()), None)
+        if numeric_parent:
+            label = f"Row {numeric_parent} · {label}"
+        display_value = value
+        if key.endswith("_cents") and isinstance(value, (int, float)) and not isinstance(value, bool):
+            display_value = f"${value / 100:,.2f}"
+        highlights.append(
+            {"label": label, "value": display_value, "path": ".".join(path)}
+        )
+        if len(highlights) >= maximum:
+            break
+    return highlights
+
+
+def _validation_summary(
+    *,
+    response: Any,
+    model_tool_name: str,
+    runner_tool_name: str,
+    status: str,
+) -> dict[str, Any]:
+    decoded = _decode_runner_payload(response)
+    ok, outcome_type, runner_status = _read_outcome(decoded)
+    rejected = status == "error" or ok is False or outcome_type in {"error", "refusal", "refused"}
+    details: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    for path, value in _walk_scalars(decoded):
+        if not path or path[-1] not in _VALIDATION_KEYS or value in (None, ""):
+            continue
+        identity = (path[-1], str(value))
+        if identity in seen:
+            continue
+        seen.add(identity)
+        details.append(
+            {
+                "label": _VALIDATION_KEYS[path[-1]],
+                "value": value,
+                "path": ".".join(path),
+            }
+        )
+        if len(details) >= 8:
+            break
+    return {
+        "decision": "rejected" if rejected else "accepted",
+        "transport_status": status,
+        "runner_reported": {
+            "ok": ok,
+            "outcome": outcome_type,
+            "status": runner_status,
+        },
+        "tool": {
+            "model_name": model_tool_name,
+            "canonical_runner_name": runner_tool_name,
+            "alias_translated": model_tool_name != runner_tool_name,
+        },
+        "reported_checks": details,
+        "explanation": (
+            "This validation view is derived from Runner's MCP result metadata. "
+            "It does not invent internal checks that Runner did not report."
+        ),
+    }
+
+
 @dataclass
 class _OpenCall:
     event: dict[str, Any]
@@ -86,12 +299,6 @@ class DemoTraceRecorder:
         self._usage: dict[str, Any] | None = None
         self._events: list[dict[str, Any]] = []
         self._event_sink = event_sink
-        self._emit(
-            kind="trace.started",
-            stage="system",
-            title="Authenticated trace started",
-            payload={"model": model, "user_message": user_message},
-        )
 
     def _emit(
         self,
@@ -144,12 +351,6 @@ class DemoTraceRecorder:
             "transport": "Streamable HTTP MCP",
             "tools": visible,
         }
-        self._emit(
-            kind="tools.catalog",
-            stage="model",
-            title=f"{server} tools exposed to the model",
-            payload=self._catalogs[server],
-        )
 
     def model_turn_started(self, *, system_prompt: str | None, input_items: list[Any]) -> None:
         turn = {
@@ -161,13 +362,14 @@ class DemoTraceRecorder:
         }
         self._model_turns.append(turn)
         self._emit(
-            kind="model.started",
+            kind="model.context",
             stage="model",
-            title=f"Model turn {turn['turn']} started",
+            title="What the model sees",
             payload={
                 "turn": turn["turn"],
-                "system_prompt": system_prompt,
-                "input_items": turn["input_items"],
+                "instructions": system_prompt,
+                "conversation_input": _expand_embedded_json(turn["input_items"]),
+                "available_runner_tools": list(self._catalogs.values()),
             },
         )
 
@@ -176,13 +378,6 @@ class DemoTraceRecorder:
             self._model_turns[-1]["model_output"] = safe_json(response)
             self._model_turns[-1]["finished_at"] = _utc_now()
         self._usage = safe_json(usage)
-        turn_number = self._model_turns[-1]["turn"] if self._model_turns else 1
-        self._emit(
-            kind="model.completed",
-            stage="model",
-            title=f"Model turn {turn_number} completed",
-            payload={"turn": turn_number, "model_output": response, "usage": usage},
-        )
 
     def tool_call_started(
         self,
@@ -214,14 +409,17 @@ class DemoTraceRecorder:
         self._tool_calls.append(event)
         self._open_calls[call_id] = _OpenCall(event=event, started=perf_counter())
         self._emit(
-            kind="runner.request",
-            stage="runner",
-            title=f"Runner received {runner_tool_name}",
+            kind="model.request",
+            stage="request",
+            title="What the model sends",
             payload={
                 "call_id": call_id,
                 "server": server,
                 "model_emitted": event["model_emitted"],
-                "canonical_request": event["runner_request"],
+                "runner_alias_translation": {
+                    "canonical_name": runner_tool_name,
+                    "translated": model_tool_name != runner_tool_name,
+                },
             },
         )
         return call_id
@@ -236,15 +434,43 @@ class DemoTraceRecorder:
                 "duration_ms": round((perf_counter() - open_call.started) * 1000),
             }
         )
+        validation = _validation_summary(
+            response=open_call.event["runner_response"],
+            model_tool_name=open_call.event["model_emitted"]["name"],
+            runner_tool_name=open_call.event["runner_request"]["name"],
+            status="ok",
+        )
+        highlights = (
+            []
+            if open_call.event["runner_request"]["name"] == "app.describe_data"
+            else _extract_highlights(_decode_runner_payload(open_call.event["runner_response"]))
+        )
+        open_call.event["validation"] = validation
+        open_call.event["highlights"] = highlights
+        self._emit(
+            kind="runner.validation",
+            stage="validation",
+            title="Runner validation",
+            payload={
+                "call_id": call_id,
+                "duration_ms": open_call.event["duration_ms"],
+                "validation": validation,
+            },
+        )
         self._emit(
             kind="runner.response",
             stage="response",
-            title=f"Runner returned {open_call.event['runner_request']['name']}",
+            title="Decoded Runner response",
             payload={
                 "call_id": call_id,
+                "tool": open_call.event["runner_request"]["name"],
                 "status": "ok",
                 "duration_ms": open_call.event["duration_ms"],
-                "response": open_call.event["runner_response"],
+                "highlights": highlights,
+                "response_format": "decoded Runner JSON body",
+                "response": _expand_embedded_json(
+                    _decode_runner_payload(open_call.event["runner_response"])
+                ),
             },
         )
 
@@ -261,15 +487,38 @@ class DemoTraceRecorder:
                 "duration_ms": round((perf_counter() - open_call.started) * 1000),
             }
         )
+        validation = _validation_summary(
+            response=open_call.event["runner_response"],
+            model_tool_name=open_call.event["model_emitted"]["name"],
+            runner_tool_name=open_call.event["runner_request"]["name"],
+            status="error",
+        )
+        open_call.event["validation"] = validation
+        open_call.event["highlights"] = []
         self._emit(
-            kind="runner.error",
-            stage="response",
-            title=f"Runner rejected {open_call.event['runner_request']['name']}",
+            kind="runner.validation",
+            stage="validation",
+            title="Runner validation",
             payload={
                 "call_id": call_id,
+                "duration_ms": open_call.event["duration_ms"],
+                "validation": validation,
+            },
+        )
+        self._emit(
+            kind="runner.response",
+            stage="response",
+            title="Decoded Runner response",
+            payload={
+                "call_id": call_id,
+                "tool": open_call.event["runner_request"]["name"],
                 "status": "error",
                 "duration_ms": open_call.event["duration_ms"],
-                "response": open_call.event["runner_response"],
+                "highlights": [],
+                "response_format": "decoded Runner error",
+                "response": _expand_embedded_json(
+                    _decode_runner_payload(open_call.event["runner_response"])
+                ),
             },
         )
 
@@ -280,15 +529,6 @@ class DemoTraceRecorder:
             "successful_calls": sum(call["status"] == "ok" for call in self._tool_calls),
             "failed_calls": sum(call["status"] == "error" for call in self._tool_calls),
         }
-        self._emit(
-            kind="trace.completed",
-            stage="response",
-            title="Authenticated trace completed",
-            payload={
-                "summary": summary,
-                "duration_ms": round((perf_counter() - self._started) * 1000),
-            },
-        )
         return {
             "trace_id": self.trace_id,
             "demo_only": True,

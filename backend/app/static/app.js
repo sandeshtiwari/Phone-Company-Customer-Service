@@ -83,6 +83,41 @@ function proposalIdsFromAnswer(text) {
   return [...new Set(String(text).match(/\bwrp_[A-Za-z0-9_-]{8,80}\b/g) || [])];
 }
 
+function proposalIdsFromTrace(trace) {
+  const found = new Set();
+  const visit = (value, key = '') => {
+    if (value == null) return;
+    if (typeof value === 'string') {
+      if (key === 'proposal_id' || key === 'proposalId') {
+        proposalIdsFromAnswer(value).forEach((id) => found.add(id));
+      }
+      return;
+    }
+    if (Array.isArray(value)) {
+      value.forEach((item) => visit(item));
+      return;
+    }
+    if (typeof value === 'object') {
+      Object.entries(value).forEach(([childKey, child]) => visit(child, childKey));
+    }
+  };
+  (trace?.events || [])
+    .filter((event) => event.kind === 'runner.response')
+    .forEach((event) => visit(event.payload?.response));
+  return [...found];
+}
+
+function customerVisibleAnswer(value) {
+  return String(value)
+    .replace(/^\s*[-*]?\s*(?:proposal|request)(?:\s+id)?\s*:\s*`?wrp_[A-Za-z0-9_-]{8,80}`?\s*$/gim, '')
+    .replace(/`?wrp_[A-Za-z0-9_-]{8,80}`?/g, 'your change request')
+    .replace(/\bev_explore_[A-Za-z0-9_-]+\b/g, 'the supporting evidence')
+    .replace(/\bsha256:[a-f0-9]{32,}\b/gi, 'a verified audit reference')
+    .replace(/\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b/gi, 'an internal record')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 function proposalStatusView(status) {
   const state = status.status || 'unknown';
   if (state === 'applied' && status.source_database_changed) {
@@ -102,9 +137,10 @@ function proposalStatusView(status) {
 }
 
 async function trackProposal(messageNode, proposalId) {
+  messageNode.classList.add('has-proposal');
   const tracker = document.createElement('div');
   tracker.className = 'proposal-status waiting';
-  tracker.innerHTML = `<span class="proposal-status-dot"></span><div><strong>Checking automatic application…</strong><small>${escapeHtml(proposalId)}</small></div>`;
+  tracker.innerHTML = '<span class="proposal-status-dot"></span><div><strong>Checking automatic application…</strong><small>Waiting for the trusted writeback receipt.</small></div>';
   messageNode.querySelector('.message-stack').append(tracker);
   for (let attempt = 0; attempt < 30; attempt += 1) {
     try {
@@ -114,7 +150,7 @@ async function trackProposal(messageNode, proposalId) {
         const view = proposalStatusView(status);
         tracker.className = `proposal-status ${view.tone}`;
         tracker.querySelector('strong').textContent = view.title;
-        tracker.querySelector('small').textContent = `${view.detail} · ${proposalId}`;
+        tracker.querySelector('small').textContent = view.detail;
         messages.scrollTop = messages.scrollHeight;
         if (view.terminal) return;
       } else if (response.status === 401) {
@@ -129,11 +165,12 @@ async function trackProposal(messageNode, proposalId) {
   }
   tracker.className = 'proposal-status waiting';
   tracker.querySelector('strong').textContent = 'Approved · background application still pending';
-  tracker.querySelector('small').textContent = `You can keep chatting while the trusted worker continues · ${proposalId}`;
+  tracker.querySelector('small').textContent = 'You can keep chatting while the trusted worker continues.';
 }
 
-function trackProposals(messageNode, answer) {
-  proposalIdsFromAnswer(answer).forEach((proposalId) => {
+function trackProposals(messageNode, answer, trace) {
+  const proposalIds = new Set([...proposalIdsFromTrace(trace), ...proposalIdsFromAnswer(answer)]);
+  proposalIds.forEach((proposalId) => {
     trackProposal(messageNode, proposalId);
   });
 }
@@ -159,7 +196,7 @@ function escapeHtml(value) {
 }
 
 function renderAssistantText(value) {
-  return escapeHtml(value)
+  return escapeHtml(customerVisibleAnswer(value))
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\n/g, '<br>');
 }
@@ -339,9 +376,134 @@ function renderRunnerCalls(trace) {
     const responseStage = document.createElement('section');
     responseStage.className = 'flow-stage response-stage';
     responseStage.innerHTML = '<div class="flow-label"><i></i>3 · Model got back</div>';
-    responseStage.append(codeViewer('Runner response', call.runner_response));
+    responseStage.append(codeViewer('Decoded Runner response', call.runner_response));
     flow.append(modelStage, requestStage, responseStage);
     card.append(header, flow);
+    group.body.append(card);
+  });
+  return group.details;
+}
+
+function highlightValue(value) {
+  if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+  if (value == null) return '—';
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T00:00:00(?:\.000)?Z$/.test(value)) {
+    return value.slice(0, 10);
+  }
+  return String(value);
+}
+
+function renderBusinessHighlights(highlights = []) {
+  if (!highlights.length) return null;
+  const section = document.createElement('section');
+  section.className = 'business-highlights';
+  const heading = document.createElement('div');
+  heading.className = 'highlight-heading';
+  heading.innerHTML = '<span>Verified data</span><small>Important values returned by Runner</small>';
+  const grid = document.createElement('div');
+  grid.className = 'highlight-grid';
+  highlights.forEach((item) => {
+    const card = document.createElement('div');
+    card.className = 'highlight-card';
+    card.title = item.path || item.label;
+    const label = document.createElement('small');
+    label.textContent = item.label;
+    const value = document.createElement('strong');
+    value.textContent = highlightValue(item.value);
+    card.append(label, value);
+    grid.append(card);
+  });
+  section.append(heading, grid);
+  return section;
+}
+
+function renderValidation(validation = {}) {
+  const section = document.createElement('section');
+  section.className = `validation-summary ${validation.decision === 'rejected' ? 'rejected' : 'accepted'}`;
+  const top = document.createElement('div');
+  top.className = 'validation-topline';
+  const decision = document.createElement('strong');
+  decision.textContent = validation.decision === 'rejected' ? 'Rejected before use' : 'Accepted by Runner';
+  const tool = document.createElement('code');
+  tool.textContent = validation.tool?.canonical_runner_name || 'Runner tool';
+  top.append(decision, tool);
+  const facts = document.createElement('div');
+  facts.className = 'validation-facts';
+  const reported = validation.runner_reported || {};
+  [['Transport', validation.transport_status], ['Outcome', reported.outcome], ['Status', reported.status]].forEach(([label, value]) => {
+    if (value == null) return;
+    const item = document.createElement('span');
+    item.innerHTML = `<small>${escapeHtml(label)}</small><b>${escapeHtml(highlightValue(value))}</b>`;
+    facts.append(item);
+  });
+  (validation.reported_checks || []).forEach((check) => {
+    const item = document.createElement('span');
+    item.title = check.path || check.label;
+    const small = document.createElement('small'); small.textContent = check.label;
+    const bold = document.createElement('b'); bold.textContent = highlightValue(check.value);
+    item.append(small, bold); facts.append(item);
+  });
+  const note = document.createElement('p');
+  note.textContent = validation.explanation || '';
+  section.append(top, facts, note);
+  return section;
+}
+
+function eventJsonViewer(event) {
+  const details = document.createElement('details');
+  details.className = 'event-json';
+  details.open = event.kind === 'model.request';
+  const summary = document.createElement('summary');
+  summary.innerHTML = `<span>{ }</span><strong>Inspect JSON</strong><small>${escapeHtml(livePayloadLabel(event))}</small>`;
+  details.append(summary);
+  let rendered = false;
+  const renderJson = () => {
+    if (rendered || !details.open) return;
+    rendered = true;
+    details.append(codeViewer(livePayloadLabel(event), event.payload, 'json', {previewLimit: 16000}));
+  };
+  details.addEventListener('toggle', renderJson);
+  if (details.open) renderJson();
+  return details;
+}
+
+function appendCuratedEventBody(card, event) {
+  if (event.kind === 'runner.validation') {
+    card.append(renderValidation(event.payload?.validation || {}));
+  }
+  if (event.kind === 'runner.response') {
+    const highlights = renderBusinessHighlights(event.payload?.highlights || []);
+    if (highlights) card.append(highlights);
+  }
+  card.append(eventJsonViewer(event));
+}
+
+function renderCuratedEvents(trace) {
+  const events = trace.events || [];
+  const group = detailGroup('4', 'call', 'Four-stage Runner boundary', 'Model sees → model sends → Runner validates → Runner responds', events.length, true);
+  if (!events.length) {
+    const empty = document.createElement('p');
+    empty.className = 'no-calls';
+    empty.textContent = 'No curated boundary events were recorded for this interaction.';
+    group.body.append(empty);
+    return group.details;
+  }
+  events.forEach((event) => {
+    const card = document.createElement('article');
+    card.className = `live-event-card arrived static-event stage-${event.stage}`;
+    const header = document.createElement('div');
+    header.className = 'live-event-header';
+    const sequence = document.createElement('span');
+    sequence.className = 'live-event-sequence';
+    sequence.textContent = String(event.sequence).padStart(2, '0');
+    const heading = document.createElement('div');
+    const title = document.createElement('strong'); title.textContent = event.title;
+    const kind = document.createElement('small'); kind.textContent = event.kind;
+    heading.append(title, kind);
+    const timing = document.createElement('time'); timing.textContent = `+${formatDuration(event.offset_ms)}`;
+    header.append(sequence, heading, timing);
+    card.append(header);
+    appendCuratedEventBody(card, event);
     group.body.append(card);
   });
   return group.details;
@@ -366,7 +528,7 @@ function renderTrace(trace) {
     const span = document.createElement('span'); span.textContent = label;
     node.append(strong, span); return node;
   }));
-  traceSections.replaceChildren(renderRunnerCalls(trace), renderModelTurns(trace), renderCatalogs(trace));
+  traceSections.replaceChildren(renderCuratedEvents(trace));
 }
 
 function addTrace(trace, showInspector = true) {
@@ -400,7 +562,7 @@ function setTraceLoading(message) {
 
 function setLiveLane(stage, complete = false) {
   liveLane.dataset.stage = stage;
-  const order = ['model', 'runner', 'response'];
+  const order = ['model', 'request', 'validation', 'response'];
   const activeIndex = order.indexOf(stage);
   liveLane.querySelectorAll('.live-stage').forEach((node) => {
     const index = order.indexOf(node.dataset.liveStage);
@@ -435,7 +597,7 @@ function startLiveTrace(message, mode = 'live') {
   waiting.className = 'live-waiting';
   waiting.innerHTML = '<span></span><div><strong>Waiting for the first event</strong><small>The authenticated session is being prepared…</small></div>';
   liveEvents.append(waiting);
-  setLiveLane('system');
+  setLiveLane('model');
 }
 
 function updateSequenceControls() {
@@ -472,14 +634,10 @@ function moveLiveSelection(direction) {
 
 function livePayloadLabel(event) {
   const labels = {
-    'trace.started': 'Trace context',
-    'tools.catalog': 'Tools visible to model',
-    'model.started': 'Model input',
-    'model.completed': 'Raw model output',
-    'runner.request': 'Canonical Runner request',
-    'runner.response': 'Scoped Runner response',
-    'runner.error': 'Runner rejection',
-    'trace.completed': 'Trace summary',
+    'model.context': 'Exact model-visible context',
+    'model.request': 'Exact tool call emitted by model',
+    'runner.validation': 'Response-derived validation details',
+    'runner.response': 'Decoded Runner response',
   };
   return labels[event.kind] || 'Event payload';
 }
@@ -506,7 +664,8 @@ function appendLiveEvent(event) {
   const timing = document.createElement('time');
   timing.textContent = `+${formatDuration(event.offset_ms)}`;
   header.append(sequence, heading, timing);
-  card.append(header, codeViewer(livePayloadLabel(event), event.payload, 'json', {previewLimit: 10000}));
+  card.append(header);
+  appendCuratedEventBody(card, event);
   card.addEventListener('click', (clickEvent) => {
     if (clickEvent.target.closest('button')) return;
     autoFollowLiveEvents = false;
@@ -677,7 +836,7 @@ chatForm.addEventListener('submit', async (event) => {
     addTrace(body.runner_trace, false);
     finishLiveTrace(body.runner_trace);
     const assistantMessage = addMessage('assistant',body.answer,{trace:body.runner_trace});
-    trackProposals(assistantMessage, body.answer);
+    trackProposals(assistantMessage, body.answer, body.runner_trace);
   } catch (error) { pending.remove(); const message = error.name === 'AbortError' ? 'This request took too long and was stopped. Please try a narrower question.' : error.message || 'The service is temporarily unreachable. Please try again.'; addMessage('assistant',message); failLiveTrace(message); }
   finally { clearTimeout(requestTimeout); sendButton.disabled = false; messageInput.focus(); }
 });
